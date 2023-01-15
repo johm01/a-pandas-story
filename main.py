@@ -1,6 +1,7 @@
 import pygame
 from settings import * 
-from Enemy import *
+from Enemy import Enemy
+from Tile import Tile
 
 # Main Player class 
 class Player():
@@ -43,6 +44,10 @@ class Game:
         self.sur = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
 
+        # Sprite groups 
+        self.visable_sprite = pygame.sprite.Group()
+        self.obstacle_sprite = pygame.sprite.Group()
+
         # Game objects 
         self.player = Player(vel=3,health=5)
         self.bamboo = Bamboo()
@@ -52,6 +57,7 @@ class Game:
     def draw(self):
         self.sur.blit(self.player.img,self.player.rect)
         self.sur.blit(self.bamboo.img,self.bamboo.rect)
+        self.visable_sprite.draw(self.sur)
     
     # Level Loading 
     def loadlevel(self,level):
@@ -63,10 +69,8 @@ class Game:
                 global active_tiles 
                 active_tiles = []
 
-                if col == ' ':
-                    img = pygame.image.load(tiles_img[0])
-                    rect = img.get_rect()
-                    self.sur.blit(img,rect)
+                if col == 'x':
+                    Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=self.visable_sprite)
 
     def run(self): 
         # Main game loop 
