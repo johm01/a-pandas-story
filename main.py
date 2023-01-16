@@ -32,10 +32,11 @@ class Player():
             print('left')
 
 # Bamboo object class
-class Bamboo:
-    def __init__(self) -> None:
-        self.img = pygame.image.load(bamboo_img[0])
-        self.rect = self.img.get_rect()
+class Bamboo(pygame.sprite.Sprite):
+    def __init__(self,groups,pos) -> None:
+        super().__init__(groups)
+        self.image = pygame.image.load(bamboo_img[0])
+        self.rect = self.image.get_rect(topleft=pos)
             
 class Game:
     def __init__(self) -> None:
@@ -50,13 +51,11 @@ class Game:
 
         # Game objects 
         self.player = Player(vel=3,health=5)
-        self.bamboo = Bamboo()
         self.enemy = Enemy()
 
     # Drawing players and other sprites 
     def draw(self):
         self.sur.blit(self.player.img,self.player.rect)
-        self.sur.blit(self.bamboo.img,self.bamboo.rect)
         self.visable_sprite.draw(self.sur)
     
     # Level Loading 
@@ -71,7 +70,8 @@ class Game:
 
                 if col == 'x':
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=self.visable_sprite)
-
+                elif col == 'b':
+                    Bamboo(pos=(x,y),groups=self.visable_sprite)
     def run(self): 
         # Main game loop 
         while True:
