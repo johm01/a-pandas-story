@@ -4,17 +4,18 @@ from Enemy import Enemy
 from Tile import Tile
 
 # Main Player class 
-class Player():
+class Player(pygame.sprite.Sprite):
     
     # Loading Player sprites 
     images = player_img
 
-    def __init__(self,vel,health) -> None:
+    def __init__(self,vel,health,groups,pos) -> None:
+        super().__init__(groups)
 
         # Player image 
-        self.img = pygame.image.load(self.images[0]).convert_alpha()
-        self.rect = self.img.get_rect()
-        pygame.transform.scale(self.img,(4,4))
+        self.image = pygame.image.load(self.images[0]).convert_alpha()
+        self.rect = self.image.get_rect(topleft = pos)
+        
         self.vel = vel
         self.health = health 
 
@@ -30,6 +31,9 @@ class Player():
         elif key[pygame.K_LEFT] and self.moving_x:
             self.rect.x -= self.vel
             print('left')
+
+    def run(self):
+        self.movement(pygame.key.get_pressed())
 
 # Bamboo object class
 class Bamboo(pygame.sprite.Sprite):
@@ -49,29 +53,25 @@ class Game:
         self.visable_sprite = pygame.sprite.Group()
         self.obstacle_sprite = pygame.sprite.Group()
 
-        # Game objects 
-        self.player = Player(vel=3,health=5)
-        self.enemy = Enemy()
-
-    # Drawing players and other sprites 
-    def draw(self):
-        self.sur.blit(self.player.img,self.player.rect)
-        self.visable_sprite.draw(self.sur)
-    
-    # Level Loading 
-    def loadlevel(self,level):
+        level = level_1
+        
         for row_index, row in enumerate(level):
             for col_index,col in enumerate(row):
                 x = row_index * 64
                 y = col_index * 64
 
-                global active_tiles 
+                global active_tiles
                 active_tiles = []
 
                 if col == 'x':
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=self.visable_sprite)
                 elif col == 'b':
-                    Bamboo(pos=(x,y),groups=self.visable_sprite)
+                    self.bamboo = Bamboo(pos=(x,y),groups=self.visable_sprite)
+                elif col == 's':
+                    Tile(img='./assets/Tiles/sky.png',pos=(x,y),groups=self.visable_sprite)
+                elif col == 'p':
+                    self.player = Player(vel=3,health=5,groups=self.visable_sprite,pos=(x,y))
+
     def run(self): 
         # Main game loop 
         while True:
@@ -88,7 +88,7 @@ class Game:
                         if self.player.on_bamboo:
                             self.player.vel = 3
                             self.player.moving_x = False
-                            print('On Bamboo',self.player.on_bamboo)
+                            print('On Bamboo', self.player.on_bamboo)
 
                     # Player moving up and down bamboo
                     if event.key == pygame.K_UP and self.player.on_bamboo:
@@ -105,16 +105,15 @@ class Game:
                         self.player.on_bamboo = False
                         self.player.vel = 3
                         self.player.moving_x = True
-                        print('Off Bamboo', self.player.on_bamboo)
+                        print('Off Bamboo',self.player.on_bamboo)
 
             # Getting Inputs 
             keys = pygame.key.get_pressed()
-            self.player.movement(keys)
+            self.player.run()
 
             # Updating display
             self.screen.fill('black')
-            self.loadlevel(level_1)
-            self.draw()
+            self.visable_sprite.draw(self.sur)
             pygame.display.update()
             self.clock.tick(FPS)
 
