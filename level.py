@@ -1,7 +1,8 @@
 from settings import *
 import pygame 
-from main import Player,Bamboo
 from Tile import Tile
+from player import Player
+from bamboo import Bamboo
 
 class Level:
     def __init__(self) -> None:
@@ -24,7 +25,7 @@ class Level:
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=self.visable_sprite)
 
                 if col == 'b':
-                    Bamboo(pos=(x,y),groups=self.visable_sprite)
+                    Bamboo(groups=self.visable_sprite,pos=(x,y))
 
                 if col == 's':
                     Tile(img='./assets/Tiles/sky.png',pos=(x,y),groups=self.visable_sprite)
