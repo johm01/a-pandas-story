@@ -64,14 +64,13 @@ class Level:
             player.moving_x = True
             print('Off Bamboo',player.on_bamboo)
 
-    def run(self):
-        # Drawing Player 
-        self.player_sprite.draw(self.sur)
-        self.player_sprite.update()
-
+  def run(self):
         self.player_onbamboo(self.player)
         
         # Drawing visable sprites
         self.visable_sprite.draw(self.sur)
         self.visable_sprite.update()
 
+        # Drawing Player 
+        self.player_sprite.draw(self.sur)
+        self.player_sprite.update()
