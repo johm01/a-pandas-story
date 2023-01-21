@@ -3,7 +3,7 @@ from settings import *
 
 class Player(pygame.sprite.Sprite):
     images = player_img
-    def __init__(self, groups, pos, vel: int , health: int) -> None:
+    def __init__(self, groups, pos, vel: int , health: int,g: float) -> None:
         super().__init__(groups)
 
          # Player image 
@@ -17,6 +17,9 @@ class Player(pygame.sprite.Sprite):
         self.on_bamboo = False
         self.moving_x = True 
 
+        # Player gravity
+        self.gravity = g
+
         # Player Movement
     def movement(self,key) -> None:
         if key[pygame.K_RIGHT] and self.moving_x:
@@ -28,5 +31,5 @@ class Player(pygame.sprite.Sprite):
             print('left')
 
     def update(self):
+        #self.rect.y += self.gravity
         self.movement(pygame.key.get_pressed())
-
