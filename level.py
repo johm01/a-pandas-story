@@ -6,8 +6,12 @@ from bamboo import Bamboo
 
 class Level:
     def __init__(self) -> None:
+        # Sprite Groups
         self.visable_sprite = pygame.sprite.Group()
+        self.collide_sprite = pygame.sprite.Group()
         self.player_sprite = pygame.sprite.Group()
+        self.bamboo_sprites = pygame.sprite.Group()
+
         self.sur = pygame.display.get_surface()
         self.create_level()
         
@@ -23,20 +27,21 @@ class Level:
                 active_tiles = []
 
                 if col == 'x':
-                    Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=self.visable_sprite)
+                    Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.visable_sprite,self.collide_sprite])
                 
                 if col == 'p':
                     self.player = Player(vel=2,health=5,groups=self.player_sprite,pos=(x,y),g=9.8)
 
                 if col == 'b':
-                    Bamboo(groups=self.visable_sprite,pos=(x,y))
+                    Bamboo(groups=[self.visable_sprite,self.bamboo_sprites],pos=(x,y))
 
                 if col == 's':
                     pass
-                    
+                
+    # Player on bamboo                  
     def player_onbamboo(self,player):
         e = pygame.key.get_pressed()
-        for sprite in self.visable_sprite:
+        for sprite in self.bamboo_sprites:
             if sprite.rect.colliderect(player.rect) and e[pygame.K_SPACE] and not player.on_bamboo:
                 player.on_bamboo = True
                 print('On Bamboo')
@@ -64,13 +69,29 @@ class Level:
             player.moving_x = True
             print('Off Bamboo',player.on_bamboo)
 
-  def run(self):
+    # Player collision
+    def player_collision(self,player):
+        for sprite in self.collide_sprite:
+            if sprite.rect.colliderect(player.rect):
+                print('hit floor')
+
+    # Updating sprites 
+    def sprite_update(self):
         self.player_onbamboo(self.player)
-        
+        self.player_collision(self.player)
+
         # Drawing visable sprites
         self.visable_sprite.draw(self.sur)
         self.visable_sprite.update()
 
+        self.collide_sprite.draw(self.sur)
+        self.collide_sprite.update()
+
         # Drawing Player 
         self.player_sprite.draw(self.sur)
         self.player_sprite.update()
+
+
+    def run(self):
+        self.sprite_update()
+
