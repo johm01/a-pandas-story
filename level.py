@@ -72,14 +72,13 @@ class Level:
             if sprite.rect.colliderect(player.rect):
                 print('hit floor')
 
-    # Updating sprites 
-    def sprite_update(self): 
-        # Drawing Sprites
+
+    def run(self):
+        self.player_onbamboo(self.player)
+        self.player_collision(self.player)
+
+         # Drawing Sprites
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-    def run(self):
-        self.player_onbamboo(self.player)
-        self.player_collision(self.player) 
-        self.sprite_update()
