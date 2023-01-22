@@ -30,7 +30,7 @@ class Level:
                     self.player = Player(vel=2,health=5,groups=self.sprite_group[0],pos=(x,y),g=9.8)
 
                 if col == 'b':
-                    Bamboo(groups=[self.sprite_group[2],self.sprite_group[1]],pos=(x,y))
+                    Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[2],self.sprite_group[1]],pos=(x,y))
 
                 if col == 's':
                     pass
