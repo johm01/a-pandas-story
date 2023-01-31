@@ -71,6 +71,7 @@ class Level:
         for sprite in self.sprite_group[3]:
             if sprite.rect.colliderect(player.rect):
                 print('hit floor')
+                player.rect.y = 0
 
 
     def run(self):
