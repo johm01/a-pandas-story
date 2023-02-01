@@ -9,23 +9,24 @@ class Player(pygame.sprite.Sprite):
          # Player image 
         self.image = pygame.image.load(self.images[0]).convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
-        
-        
+
+        self.gravity = g
         self.vel = vel
         self.health = health 
 
         self.on_bamboo = False
         self.moving_x = True 
         self.is_jump = False
-        self.jumpCount = 5
-
-        # Player gravity
-        self.gravity = g
+        self.on_floor = True 
+        self.jumpCount = 10 
 
         # Player state 
         self.state = 'idle'
 
-        # Player Movement
+        self.sprite_groups = orders
+
+
+    # Player Movement
     def movement(self,key) -> None:
         if key[pygame.K_RIGHT] and self.moving_x:
             self.state = 'right'
@@ -44,13 +45,20 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y -= (self.jumpCount * abs(self.jumpCount)) * 0.5
                 self.jumpCount -= 2
             else:
-                self.state = 'idle'
                 self.jumpCount = 10
                 self.is_jump = False
                 
         print('State: ',self.state)
 
-    def update(self):
-        #self.rect.y += self.gravity
-        self.movement(pygame.key.get_pressed())
+    def collision(self):
+        for sprite in self.sprite_groups[1]:
+            if sprite.rect.colliderect(self.rect):
+                self.gravity = 0
 
+    def p_gravity(self):
+         self.rect.y += self.gravity 
+
+    def update(self):
+        self.p_gravity()
+        self.collision()
+        self.movement(pygame.key.get_pressed())
