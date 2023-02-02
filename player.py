@@ -14,10 +14,13 @@ class Player(pygame.sprite.Sprite):
         self.vel = vel
         self.health = health 
 
+        # Player states
         self.on_bamboo = False
         self.moving_x = True 
         self.is_jump = False
         self.on_floor = True 
+        self.falling = True
+
         self.jumpCount = 10 
 
         # Player state 
@@ -48,17 +51,50 @@ class Player(pygame.sprite.Sprite):
                 self.jumpCount = 10
                 self.is_jump = False
                 
-        print('State: ',self.state)
+    
+    # Player on bamboo                  
+    def player_onbamboo(self):
+        e = pygame.key.get_pressed()
+        for sprite in self.sprite_groups[0]:
+            if sprite.rect.colliderect(self.rect) and e[pygame.K_q] and not self.on_bamboo:
+                self.on_bamboo = True
+
+                print('On Bamboo')
+                # Player is on bamboo
+
+        if self.on_bamboo:
+            self.moving_x = False
+            self.falling = False
+            self.gravity = 9.8
+            print('On Bamboo', self.on_bamboo)
+
+        # Player moving up and down bamboo
+        if e[pygame.K_UP] and self.on_bamboo:
+            self.rect.y -= self.vel 
+        elif e[pygame.K_DOWN] and self.on_bamboo:
+            self.rect.y += self.vel
+
+        # Jump off bamboo
+        if e[pygame.K_e] and self.on_bamboo:
+            self.on_bamboo = False
+            self.falling = True
+            self.moving_x = True
+            print('Off Bamboo',self.on_bamboo)   
+
 
     def collision(self):
         for sprite in self.sprite_groups[1]:
             if sprite.rect.colliderect(self.rect):
-                self.gravity = 0
+               self.gravity = 0 
 
+    # Player gravity 
     def p_gravity(self):
-         self.rect.y += self.gravity 
+        if self.falling:
+            self.rect.y += self.gravity 
 
     def update(self):
+        print(self.gravity)
         self.p_gravity()
         self.collision()
+        self.player_onbamboo()
         self.movement(pygame.key.get_pressed())
