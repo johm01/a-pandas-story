@@ -39,37 +39,8 @@ class Level:
                 if col == 'f':
                     Tile(img='./assets/Tiles/fruit.png',groups=[self.sprite_group[1]],pos=(x,y))  
 
-    # Player on bamboo                  
-    def player_onbamboo(self,player):
-        e = pygame.key.get_pressed()
-        for sprite in self.sprite_group[0]:
-            if sprite.rect.colliderect(player.rect) and e[pygame.K_q] and not player.on_bamboo:
-                player.on_bamboo = True
-                print('On Bamboo')
-                # Player is on bamboo
-
-        if player.on_bamboo:
-            player.vel = 3
-            player.moving_x = False
-            print('On Bamboo', player.on_bamboo)
-
-        # Player moving up and down bamboo
-        if e[pygame.K_UP] and player.on_bamboo:
-            player.rect.y -= player.vel 
-        elif e[pygame.K_DOWN] and player.on_bamboo:
-            player.rect.y += player.vel
-
-        # Jump off bamboo
-        if e[pygame.K_e] and player.on_bamboo:
-            player.on_bamboo = False
-            player.vel = 3
-            player.moving_x = True
-            print('Off Bamboo',player.on_bamboo)   
-
     def run(self):
-        self.player_onbamboo(self.player)
-
-         # Drawing Sprites
+        # Drawing Sprites
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
