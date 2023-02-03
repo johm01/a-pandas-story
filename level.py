@@ -28,10 +28,10 @@ class Level:
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
-                    self.player = Player(vel=2,health=5,groups=self.sprite_group[3],pos=(x,y),g=9.8)
+                    self.player = Player(vel=4,health=5,groups=self.sprite_group[3],pos=(x,y),g=1.2)
 
                 if col == 'b':
-                    Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[1],self.sprite_group[0]],pos=(x,y))
+                    Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y))
 
                 if col == 'l':
                     Tile(img='./assets/Tiles/leaf.png',groups=[self.sprite_group[1]],pos=(x,y))
