@@ -28,6 +28,8 @@ class Player(pygame.sprite.Sprite):
 
         self.sprite_groups = orders
 
+        self.direction = pygame.math.Vector2(0,0)
+
 
     # Player Movement
     def movement(self,key) -> None:
@@ -39,18 +41,16 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= self.vel
 
         # Player jump
-        if not self.is_jump:
-            if key[pygame.K_SPACE]:
-                self.state = 'jump'
-                self.is_jump = True
-        else:
-            if self.jumpCount >= -10:
-                self.rect.y -= (self.jumpCount * abs(self.jumpCount)) * 0.5
-                self.jumpCount -= 2
-            else:
-                self.jumpCount = 10
-                self.is_jump = False
-                
+        if key[pygame.K_SPACE] and not self.is_jump:
+            self.state = 'jump'
+            self.is_jump = True
+            self.jump()
+
+        if self.is_jump:
+            self.is_jump = False
+                    
+    def jump(self):
+        self.direction.y = -8
     
     # Player on bamboo                  
     def player_onbamboo(self):
@@ -58,14 +58,12 @@ class Player(pygame.sprite.Sprite):
         for sprite in self.sprite_groups[0]:
             if sprite.rect.colliderect(self.rect) and e[pygame.K_q] and not self.on_bamboo:
                 self.on_bamboo = True
-
+                self.falling = False
                 print('On Bamboo')
                 # Player is on bamboo
 
         if self.on_bamboo:
             self.moving_x = False
-            self.falling = False
-            self.gravity = 9.8
             print('On Bamboo', self.on_bamboo)
 
         # Player moving up and down bamboo
@@ -83,14 +81,27 @@ class Player(pygame.sprite.Sprite):
 
 
     def collision(self):
-        for sprite in self.sprite_groups[1]:
-            if sprite.rect.colliderect(self.rect):
-               self.gravity = 0 
+            for sprite in self.sprite_groups[1]:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y > 0: 
+                        self.rect.bottom = sprite.rect.top
+                        self.direction.y = 0
+                    elif self.direction.y < 0:
+                        self.rect.top = sprite.rect.bottom
+                        self.direction.y = 0
+
+            for sprite in self.sprite_groups[1]:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x < 0:
+                        self.rect.left = sprite.rect.right
+                    elif self.direction.x > 0:
+                       self.rect.right = sprite.rect.left
 
     # Player gravity 
     def p_gravity(self):
         if self.falling:
-            self.rect.y += self.gravity 
+            self.direction.y += self.gravity
+            self.rect.y += self.direction.y
 
     def update(self):
         print(self.gravity)
