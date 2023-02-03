@@ -38,9 +38,17 @@ class Level:
 
                 if col == 'f':
                     Tile(img='./assets/Tiles/fruit.png',groups=[self.sprite_group[1]],pos=(x,y))  
+                    
+    def camera(self):
+        x = self.player.rect.centerx
+        direction_x = self.player.direction.x
+
+        if x < 200:
+            WIDTH / 2
 
     def run(self):
         # Drawing Sprites
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
+        self.camera()
