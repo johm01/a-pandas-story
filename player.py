@@ -88,17 +88,18 @@ class Player(pygame.sprite.Sprite):
                     self.direction.y = 0
                     
     # Horizontal Collision
-    def collision2(self,sprite: list):
+    def collision2(self,sprite):
         self.rect.x += self.direction.x * self.vel
         for s in sprite:
             if s.rect.colliderect(self.rect):
                 # if the player collides with a trap
-                if self.sprite_groups[2] in sprite:
-                    self.health -= 1
+                if sprite == self.sprite_groups[4]:
                     if self.direction.x < 0:
                         self.rect.left = s.rect.right
+                        self.health -= 1
                     elif self.direction.x > 0:
                         self.rect.right = s.rect.left
+                        self.health -= 1
 
                 # Player colliding with anything else 
                 if self.direction.x < 0:
@@ -115,6 +116,6 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         print(self.health)
         self.movement(pygame.key.get_pressed())
-        self.collision2([self.sprite_groups[1],self.sprite_groups[2]])
+        self.collision2(self.sprite_groups[4])
         self.collision(self.sprite_groups[1])
         self.player_onbamboo()
