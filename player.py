@@ -118,8 +118,8 @@ class Player(pygame.sprite.Sprite):
                 elif self.direction.x > 0:
                     self.rect.right = s.rect.left
     
-    def health_check(self,player):
-        if player.health == 0 and self.is_dead == False:
+    def health_check(self):
+        if self.health == 0 and self.is_dead == False:
             print('player is dead')
             self.is_dead = True
         
