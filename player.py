@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.on_floor = True 
         self.falling = True
         self.is_dead = False
+        self.on_trap = False
         self.state = 'idle'
 
         self.sprite_groups = orders
@@ -81,16 +82,6 @@ class Player(pygame.sprite.Sprite):
         for s in sprite:
             if s.rect.colliderect(self.rect):
                 self.is_ground = True
-                if sprite == self.sprite_groups[4]:
-                    if self.direction.y > 0: 
-                            self.rect.bottom = s.rect.top
-                            self.direction.y = 0
-                            self.health -= 1
-                    elif self.direction.y < 0:
-                            self.rect.top = s.rect.bottom
-                            self.direction.y = 0
-                            self.health -= 1
-
                 if self.direction.y > 0: 
                     self.rect.bottom = s.rect.top
                     self.direction.y = 0
@@ -103,21 +94,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.direction.x * self.vel
         for s in sprite:
             if s.rect.colliderect(self.rect):
-                # if the player collides with a trap
-                if sprite == self.sprite_groups[4]:
+                    # Player colliding with anything else 
                     if self.direction.x < 0:
                         self.rect.left = s.rect.right
-                        self.health = self.health - 1
                     elif self.direction.x > 0:
                         self.rect.right = s.rect.left
-                        self.health = self.health - 1
-
-                # Player colliding with anything else 
-                if self.direction.x < 0:
-                    self.rect.left = s.rect.right
-                elif self.direction.x > 0:
-                    self.rect.right = s.rect.left
-    
+ 
     def health_check(self):
         if self.health == 0 and self.is_dead == False:
             print('player is dead')
@@ -136,5 +118,5 @@ class Player(pygame.sprite.Sprite):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
         self.health_check()
-        self.collision_v(self.sprite_groups[4])
-        self.collision_h(self.sprite_groups[4])
+        self.collision_h(self.sprite_groups[2])
+        self.collision_v(self.sprite_groups[2])
