@@ -17,9 +17,10 @@ visable_sprite = pygame.sprite.Group()
 collide_sprite = pygame.sprite.Group()
 player_sprite = pygame.sprite.Group()
 bamboo_sprite = pygame.sprite.Group()
+trap_sprite = pygame.sprite.Group()
 
 # Order of sprite groups
-orders = [bamboo_sprite,visable_sprite,collide_sprite,player_sprite]
+orders = [bamboo_sprite,visable_sprite,collide_sprite,player_sprite,trap_sprite]
 
 # Levels 
 level_1 = [
@@ -27,7 +28,7 @@ level_1 = [
     ['','','','','','','x','','','','','','','','','','','','',''],
     ['','','','','','','x','','','','','','','','','','','','',''],
     ['','','','','','','x','','','','','','','','','','','','',''],
-    ['','','','','','s','x','','','','','','','','','','','','',''],
+    ['','','','','','','x','','','','','','','','','','','','',''],
     ['l','','','','','t','x','','','','','','','','','','','','',''],
     ['l','','','','b','b','x','','','','','','','','','','','','',''],
     ['','','','','s','t','x','','','','','','','','','','','','',''],
