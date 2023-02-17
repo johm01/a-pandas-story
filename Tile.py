@@ -7,10 +7,3 @@ class Tile(pygame.sprite.Sprite):
         self.image = pygame.image.load(img).convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
         self.type = type
-
-    def collectible_collision(self):
-        print('yes')
-
-    def update(self):
-        if self.type == 'coin':
-            self.collectible_collision()
