@@ -37,8 +37,15 @@ class Level:
                     Tile(img='./assets/Tiles/leaf.png',groups=[self.sprite_group[1]],pos=(x,y))
 
                 if col == 'f':
-                    Tile(img='./assets/Tiles/fruit.png',groups=[self.sprite_group[1]],pos=(x,y))  
-                    
+                    Tile(img='./assets/Tiles/sky2.png',groups=[self.sprite_group[1]],pos=(x,y)) 
+
+                if col == 's':
+                    Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+
+                if col == 't':
+                    Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[0]]) 
+
+    # Player camera
     def camera(self):
         x = self.player.rect.centerx
         direction_x = self.player.direction.x
