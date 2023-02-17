@@ -52,6 +52,7 @@ class Player(pygame.sprite.Sprite):
             if sprite.rect.colliderect(self.rect) and e[pygame.K_q] and not self.on_bamboo:
                 self.on_bamboo = True
                 self.falling = False
+                self.is_ground = False
                 print('On Bamboo')
                 # Player is on bamboo
 
@@ -70,29 +71,40 @@ class Player(pygame.sprite.Sprite):
             self.on_bamboo = False
             self.falling = True
             self.moving_x = True
+            self.is_ground = True
             print('Off Bamboo',self.on_bamboo)   
 
     # Vertical Collision
-    def collision(self):
+    def collision(self,sprite):
         self.p_gravity()
-        for sprite in self.sprite_groups[1]:
-            if sprite.rect.colliderect(self.rect):
+        for s in sprite:
+            if s.rect.colliderect(self.rect):
                 self.is_ground = True
                 if self.direction.y > 0: 
-                    self.rect.bottom = sprite.rect.top
+                    self.rect.bottom = s.rect.top
                     self.direction.y = 0
                 elif self.direction.y < 0:
-                    self.rect.top = sprite.rect.bottom
+                    self.rect.top = s.rect.bottom
                     self.direction.y = 0
+                    
     # Horizontal Collision
-    def collision2(self):
+    def collision2(self,sprite: list):
         self.rect.x += self.direction.x * self.vel
-        for sprite in self.sprite_groups[1]:
-            if sprite.rect.colliderect(self.rect):
+        for s in sprite:
+            if s.rect.colliderect(self.rect):
+                # if the player collides with a trap
+                if self.sprite_groups[2] in sprite:
+                    self.health -= 1
+                    if self.direction.x < 0:
+                        self.rect.left = s.rect.right
+                    elif self.direction.x > 0:
+                        self.rect.right = s.rect.left
+
+                # Player colliding with anything else 
                 if self.direction.x < 0:
-                    self.rect.left = sprite.rect.right
+                    self.rect.left = s.rect.right
                 elif self.direction.x > 0:
-                    self.rect.right = sprite.rect.left
+                    self.rect.right = s.rect.left
 
     # Player gravity 
     def p_gravity(self):
@@ -101,8 +113,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.direction.y
 
     def update(self):
-        print(self.gravity)
+        print(self.health)
         self.movement(pygame.key.get_pressed())
-        self.collision2()
-        self.collision()
+        self.collision2([self.sprite_groups[1],self.sprite_groups[2]])
+        self.collision(self.sprite_groups[1])
         self.player_onbamboo()
