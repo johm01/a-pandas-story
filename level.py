@@ -28,7 +28,7 @@ class Level:
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
-                    self.player = Player(vel=4,health=5,groups=self.sprite_group[3],pos=(x,y),g=1.2)
+                    self.player = Player(vel=4,health=5,groups=self.sprite_group[3],pos=(x,y),g=1.2,hp_mod=0)
 
                 if col == 'b':
                     Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y))
@@ -43,8 +43,22 @@ class Level:
                     Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
 
                 if col == 't':
-                    Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[0]]) 
+                    Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[4]]) 
 
+    def trap_collision(self,trap):
+        for t in trap:
+            if t.rect.colliderect(self.player.rect):
+                if self.player.direction.y > 0: 
+                        self.player.rect.bottom = t.rect.top
+                        self.player.direction.y = 0
+                elif self.player.direction.y < 0:
+                        self.player.rect.top = t.rect.bottom
+                        self.player.direction.y = 0
+
+                if self.player.direction.x < 0:
+                        self.player.rect.left = t.rect.right
+                elif self.player.direction.x > 0:
+                        self.player.rect.right = t.rect.left
     # Player camera
     def camera(self):
         x = self.player.rect.centerx
@@ -58,4 +72,5 @@ class Level:
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
+        self.trap_collision(self.sprite_group[4])
         self.camera()
