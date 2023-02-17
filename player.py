@@ -21,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.is_ground = False
         self.on_floor = True 
         self.falling = True
+        self.is_dead = False
         self.state = 'idle'
 
         self.sprite_groups = orders
@@ -41,10 +42,9 @@ class Player(pygame.sprite.Sprite):
             self.state = 'jump'
             self.is_ground = False
             self.jump()
-
-                    
+                
     def jump(self):
-        self.direction.y = -18
+        self.direction.y = -20
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
@@ -85,9 +85,11 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y > 0: 
                             self.rect.bottom = s.rect.top
                             self.direction.y = 0
+                            self.health -= 1
                     elif self.direction.y < 0:
                             self.rect.top = s.rect.bottom
                             self.direction.y = 0
+                            self.health -= 1
 
                 if self.direction.y > 0: 
                     self.rect.bottom = s.rect.top
@@ -117,11 +119,14 @@ class Player(pygame.sprite.Sprite):
                     self.rect.right = s.rect.left
     
     def health_check(self,player):
-        if player.health == 0:
+        if player.health == 0 and self.is_dead == False:
             print('player is dead')
-            player.health 
+            self.is_dead = True
+        
+        # Player dead 
+        if self.is_dead:
+            self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
 
-    # Player gravity 
     def p_gravity(self):
         if self.falling:
             self.direction.y += self.gravity
