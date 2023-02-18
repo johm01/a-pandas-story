@@ -2,6 +2,7 @@ from settings import *
 import pygame 
 from Tile import Tile
 from player import Player
+from collectible import Collectible
 
 class Level:
     def __init__(self) -> None:
@@ -10,8 +11,6 @@ class Level:
 
         self.sur = pygame.display.get_surface()
         self.create_level()
-
-        self.leaf_cnt = 50 
         
     def create_level(self):
         level = level_1
@@ -21,8 +20,7 @@ class Level:
                 x = row_index * 64
                 y = col_index * 64
 
-                global active_tiles
-                active_tiles = []
+                self.coins = []
 
                 if col == 'x':
                     Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]],type='tile')
@@ -34,7 +32,7 @@ class Level:
                     Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y),type='bamboo')
 
                 if col == 'l':
-                    Tile(img='./assets/Tiles/coin.png',groups=[self.sprite_group[1]],pos=(x,y),type='')
+                    Collectible(groups=[self.sprite_group[5]],pos=(x+25,y-45),type='coin')
 
                 if col == 's':
                     Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]],type='tile')
@@ -59,19 +57,17 @@ class Level:
                         self.player.rect.left = t.rect.right
                 elif self.player.direction.x > 0:
                         self.player.rect.right = t.rect.left
-
-    # Player camera
-    def camera(self):
-        x = self.player.rect.centerx
-        direction_x = self.player.direction.x
-
-        if x < 200:
-            WIDTH / 2
+    
+    def collectible_collision(self,collect):
+        for c in collect:
+            if c.rect.colliderect(self.player.rect):
+                collect.empty()
 
     def run(self):
         # Drawing Sprites
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
+
+        self.collectible_collision(self.sprite_group[5])
         self.trap_collision(self.sprite_group[4])
-        self.camera()
