@@ -3,7 +3,6 @@ import pygame
 from Tile import Tile
 from player import Player
 from collectible import Collectible
-
 class Level:
     def __init__(self) -> None:
         # Sprite Groups
@@ -11,6 +10,8 @@ class Level:
 
         self.sur = pygame.display.get_surface()
         self.create_level()
+
+        self.leaf_cnt = 50 
         
     def create_level(self):
         level = level_1
@@ -23,22 +24,22 @@ class Level:
                 self.coins = []
 
                 if col == 'x':
-                    Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]],type='tile')
+                    self.tile = Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
                     self.player = Player(vel=4,health=5,groups=self.sprite_group[3],pos=(x,y),g=1.2,hp_mod=0)
 
                 if col == 'b':
-                    Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y),type='bamboo')
+                    self.bamboo = Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y))
 
                 if col == 'l':
-                    Collectible(groups=[self.sprite_group[5]],pos=(x+25,y-45),type='coin')
+                    self.item = Collectible(groups=[self.sprite_group[5]],pos=(x+25,y-45),type='coin')
 
                 if col == 's':
-                    Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]],type='tile')
+                    self.platform = Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
 
                 if col == 't':
-                    Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[4]],type='trap') 
+                    self.trap = Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[4]]) 
 
     def trap_collision(self,trap):
         for t in trap:
@@ -58,10 +59,10 @@ class Level:
                 elif self.player.direction.x > 0:
                         self.player.rect.right = t.rect.left
     
-    def collectible_collision(self,collect):
-        for c in collect:
-            if c.rect.colliderect(self.player.rect):
-                collect.empty()
+    def collectible_collision(self):
+        for c in self.sprite_group[5]:
+            if c.rect.colliderect(self.player.rect) and self.item.type == 'coin':
+                print('yes')
 
     def run(self):
         # Drawing Sprites
@@ -69,5 +70,5 @@ class Level:
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        self.collectible_collision(self.sprite_group[5])
+        self.collectible_collision()
         self.trap_collision(self.sprite_group[4])
