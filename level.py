@@ -70,16 +70,26 @@ class Level:
 class Collectible(pygame.sprite.Sprite):
     def __init__(self, groups, pos, type) -> None:
         super().__init__(groups)
-        self.img = './assets/Tiles/coin.png'
-        self.image = pygame.image.load(self.img).convert_alpha()
+        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.sprite_groups = orders
         self.type = type
-    
+        if self.type == 'coin':
+            self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
+        elif self.type == 'fruit':
+            self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
+        elif self.type == 'soda':
+            self.image = pygame.image.load('./assets/Tiles/can.png').convert_alpha()
+
     def collision(self):
         for s in self.sprite_groups[4]:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
                 self.image = pygame.image.load('./assets/Tiles/sky2.png').convert_alpha()
-  
+            elif s.rect.colliderect(self.rect) and self.type == 'fruit':
+                if not player.is_dead and player.health >= 1:
+                    player.health += 2
+                else:
+                    player.health += player.hp_mod
+
     def update(self):
         self.collision()
