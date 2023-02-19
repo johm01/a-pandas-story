@@ -9,8 +9,8 @@ FPS = 60
 
 player_img = ['./assets/Player/player.png','./assets/Player/player.png']
 bamboo_img = ['./assets/Player/bamboo_1.png']
-enemy_img = ['./assets/Mobs/mob1.png']
-tiles_img = ['./assets/Tiles/tile1.png']
+tiles_img = ['./assets/Tiles/tile1.png','./assets/Tiles/slab.png','./assets/Player/bamboo_1.png']
+items_img = ['./assets/Tiles/coin.png','./assets/Tiles/fruit.png']
 
 # Sprite Groups
 visable_sprite = pygame.sprite.Group()
@@ -66,5 +66,5 @@ level_2 = [
     ['','','','','','','','','','','','','','','','','','','',''],
 ]
 
-# Level order
+
 levels = [level_1,level_2]
