@@ -117,6 +117,5 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
-        self.health_check()
         self.collision_h(self.sprite_groups[2])
         self.collision_v(self.sprite_groups[2])
