@@ -14,7 +14,7 @@ class Level:
         
     def create_level(self):
         level = level_1
-        
+        tile = tiles_img
         for row_index, row in enumerate(level):
             for col_index,col in enumerate(row):
                 x = row_index * 64
@@ -24,19 +24,19 @@ class Level:
                 self.coins = []
 
                 if col == 'x':
-                    self.tile = Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+                    self.tile = Tile(img=tile[0],pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
                     player = Player(vel=4,health=5,groups=self.sprite_group[4],pos=(x,y),g=1.2,hp_mod=0)
 
                 if col == 'b':
-                    self.bamboo = Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y))
+                    self.bamboo = Tile(img=tile[2],groups=[self.sprite_group[0]],pos=(x,y))
 
                 if col == 'l':
                     Collectible(groups=[self.sprite_group[3]],pos=(x+25,y-45),type='coin')
 
                 if col == 's':
-                    self.platform = Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+                    self.platform = Tile(img=tile[1],pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
 
                 if col == 't':
                     self.trap = Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]) 
