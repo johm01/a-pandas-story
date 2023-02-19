@@ -2,7 +2,6 @@ from settings import *
 import pygame 
 from Tile import Tile
 from player import Player
-from collectible import Collectible
 class Level:
     def __init__(self) -> None:
         # Sprite Groups
@@ -21,29 +20,30 @@ class Level:
                 x = row_index * 64
                 y = col_index * 64
 
+                global player
                 self.coins = []
 
                 if col == 'x':
                     self.tile = Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
-                    self.player = Player(vel=4,health=5,groups=self.sprite_group[3],pos=(x,y),g=1.2,hp_mod=0)
+                    player = Player(vel=4,health=5,groups=self.sprite_group[4],pos=(x,y),g=1.2,hp_mod=0)
 
                 if col == 'b':
                     self.bamboo = Tile(img='./assets/Player/bamboo_1.png',groups=[self.sprite_group[0]],pos=(x,y))
 
                 if col == 'l':
-                    self.item = Collectible(groups=[self.sprite_group[5]],pos=(x+25,y-45),type='coin')
+                    Collectible(groups=[self.sprite_group[3]],pos=(x+25,y-45),type='coin')
 
                 if col == 's':
                     self.platform = Tile(img='./assets/Tiles/slab.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
 
                 if col == 't':
-                    self.trap = Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[4]]) 
+                    self.trap = Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]) 
 
     def trap_collision(self,trap):
         for t in trap:
-            if t.rect.colliderect(self.player.rect):
+            if t.rect.colliderect(player.rect):
                 # Checking health everytime we hit a trap instead of constantly checking it within the player update method
                 self.player.health -= 1
                 self.player.health_check()
@@ -59,16 +59,27 @@ class Level:
                 elif self.player.direction.x > 0:
                         self.player.rect.right = t.rect.left
     
-    def collectible_collision(self):
-        for c in self.sprite_group[5]:
-            if c.rect.colliderect(self.player.rect) and self.item.type == 'coin':
-                print('yes')
-
     def run(self):
         # Drawing Sprites
         for i in range(len(self.sprite_group)):
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        self.collectible_collision()
-        self.trap_collision(self.sprite_group[4])
+        self.trap_collision(self.sprite_group[5])
+    
+class Collectible(pygame.sprite.Sprite):
+    def __init__(self, groups, pos, type) -> None:
+        super().__init__(groups)
+        self.img = './assets/Tiles/coin.png'
+        self.image = pygame.image.load(self.img).convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.sprite_groups = orders
+        self.type = type
+    
+    def collision(self):
+        for s in self.sprite_groups[4]:
+            if s.rect.colliderect(self.rect) and self.type == 'coin':
+                self.image = pygame.image.load('./assets/Tiles/sky2.png').convert_alpha()
+  
+    def update(self):
+        self.collision()
