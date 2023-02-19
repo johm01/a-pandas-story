@@ -107,7 +107,7 @@ class Player(pygame.sprite.Sprite):
         
         # Player dead 
         if self.is_dead:
-            self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+            self.sprite_groups[4].empty()
 
     def p_gravity(self):
         if self.falling:
