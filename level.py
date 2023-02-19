@@ -9,8 +9,6 @@ class Level:
 
         self.sur = pygame.display.get_surface()
         self.create_level()
-
-        self.leaf_cnt = 50 
         
     def create_level(self):
         level = level_1
