@@ -68,10 +68,13 @@ class Level:
 class Collectible(pygame.sprite.Sprite):
     def __init__(self, groups, pos, type) -> None:
         super().__init__(groups)
+        self.sur = pygame.display.get_surface()
         self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.sprite_groups = orders
         self.type = type
+        self.collected = False
+
         if self.type == 'coin':
             self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         elif self.type == 'fruit':
@@ -83,7 +86,13 @@ class Collectible(pygame.sprite.Sprite):
         for s in self.sprite_groups[4]:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
                 self.image = pygame.image.load('./assets/Tiles/sky2.png').convert_alpha()
-            elif s.rect.colliderect(self.rect) and self.type == 'fruit':
+                self.collected = True 
+            # If the player walks over the already collected coin 
+            elif s.rect.colliderect(self.rect) and self.type is 'coin' and self.collected:
+                pass
+
+            if s.rect.colliderect(self.rect) and self.type == 'fruit':
+                self.collected = True 
                 if not player.is_dead and player.health >= 1:
                     player.health += 2
                 else:
