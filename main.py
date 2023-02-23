@@ -2,6 +2,12 @@ import pygame
 from settings import * 
 from level import Level
 
+class Button:
+    def __init__(self,type,level) -> None:
+        self.type
+        # To keep track of the current level being played 
+        self.level
+
 class Game:
     def __init__(self) -> None:
         pygame.init()
@@ -10,7 +16,7 @@ class Game:
         self.sur = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
 
-        self.level = Level()
+        self.lev = Level(level_1)
 
     def run(self): 
         # Main game loop 
@@ -22,7 +28,7 @@ class Game:
             # Updating display
             self.screen.fill('black')
             self.screen.blit(self.bg,(0,0))
-            self.level.run()
+            self.lev.run()
             pygame.display.update()
             self.clock.tick(FPS)
 
