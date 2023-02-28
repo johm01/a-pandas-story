@@ -3,7 +3,6 @@ import pygame
 from Tile import Tile
 from player import Player
 
-
 def button(screen,pos,text,level):
     font = pygame.font.SysFont("Arial",25)
     text_r = font.render(text,1,(255,255,0))
@@ -16,20 +15,19 @@ def button(screen,pos,text,level):
     pygame.draw.rect(screen, (100, 100, 100), (x, y, w , h))
     return screen.blit(text_r, (x, y))
 
-
-
 class Level:
-    def __init__(self,level) -> None:
+    def __init__(self) -> None:
         self.sprite_group = orders
+        self.bg = pygame.image.load('./assets/Tiles/background.png').convert_alpha()
         self.sur = pygame.display.get_surface()
-        self.level = level
+        self.state = None
         self.start = False
         self.replace = False
+        self.clock = pygame.time.Clock()
 
         self.b1 = button(self.sur,(150,0),'Level 1',level_1)
         #self.b3 = button(self.screen,(350,0),'Level 2')
         self.b2 = button(self.sur,(250,0),'Clear Level',empty)
-            
         self.buttons()
 
     def create_level(self):
@@ -41,20 +39,19 @@ class Level:
 
                 global player
                 self.coins = []
+                # TODO ADD SPRITES TO SPRITE LIST FOR BUTTONS 
 
                 if col == 'x':
-                    self.tile = Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+                    self.sprite_group[1].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
 
                 if col == 'n':
-                    self.tile = Tile(img='./assets/Tiles/tile_2.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+                    self.tile_1 = Tile(img='./assets/Tiles/tile_2.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
                 
                 if col == 'p':
                     player = Player(vel=4,health=5,groups=self.sprite_group[4],pos=(x,y),g=1.2,hp_mod=0)
 
                 if col == 'b':
-                    self.bamboo = Tile(img=tile[2],groups=[self.sprite_group[0]],pos=(x,y))
-                    if self.replace:
-                        self.bamboo = Tile(img='./assets/Tiles/dead.png',pos=(x,y),groups=[self.sprite_group[0]])
+                    self.sprite_group[0].add(Tile(img=tile[2],groups=[self.sprite_group[0]],pos=(x,y)))
 
                 if col == 'l':
                     self.sprite_group[3].add(Collectible(groups=[self.sprite_group[3]],pos=(x+25,y-45),type='coin'))
@@ -75,9 +72,8 @@ class Level:
                 self.cols = ['x','n','p','b','l','s','t','']
 
                 if col == 't':
-                    self.tile = Tile(img='./assets/Tiles/dead.png',pos=(x,y),groups=[self.sprite_group[1]])
+                    Tile(img='./assets/Tiles/dead.png',pos=(x,y),groups=[self.sprite_group[1]])
                    
-
     def trap_collision(self,trap):
         for t in trap:
             if t.rect.colliderect(player.rect):
@@ -105,19 +101,21 @@ class Level:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.b1.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
-                        self.start = True
+                        self.level = level_1
                         self.create_level()
-                        self.run()
                     
                     if self.b2.collidepoint(pygame.mouse.get_pos()):
                         print('clearing level')
                         # Replacing the current level
-                        self.replace = True
-                        self.replace_level()
-            if self.start:
-                self.run()
+                        self.level = empty
+                        self.sprite_group[0].empty()
+                        self.create_level()
+
+
+            
+            self.sur.blit(self.bg,(0,0))
+            self.run()
             pygame.display.update()
-            self.clock = pygame.time.Clock()
             self.clock.tick(FPS)
 
     def run(self):
