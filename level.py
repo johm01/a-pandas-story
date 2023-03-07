@@ -24,11 +24,7 @@ class Level:
         self.start = False
         self.replace = False
         self.clock = pygame.time.Clock()
-
-        self.b1 = button(self.sur,(150,0),'Level 1',level_1)
-        #self.b3 = button(self.screen,(350,0),'Level 2')
-        self.b2 = button(self.sur,(250,0),'Clear Level',empty)
-        self.buttons()
+        self.start_game()
 
     def create_level(self):
         tile = tiles_img
@@ -57,10 +53,10 @@ class Level:
                     self.sprite_group[3].add(Collectible(groups=[self.sprite_group[3]],pos=(x+25,y-45),type='coin'))
 
                 if col == 's':
-                    self.platform = Tile(img=tile[1],pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]) 
+                    self.sprite_group[2].add(Tile(img=tile[1],pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
 
                 if col == 't':
-                    self.trap = Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]) 
+                    self.sprite_group[5].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]))
     
     def replace_level(self):
         for row_index, row in enumerate(self.level):
@@ -92,7 +88,7 @@ class Level:
                 elif player.direction.x > 0:
                         player.rect.right = t.rect.left
 
-    def buttons(self):
+    def start_game(self):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -108,12 +104,16 @@ class Level:
                         print('clearing level')
                         # Replacing the current level
                         self.level = empty
-                        self.sprite_group[0].empty()
-                        self.create_level()
-
-
+                        for i in range(len(self.sprite_group)):
+                            self.sprite_group[i].empty()
             
             self.sur.blit(self.bg,(0,0))
+
+            # Buttons
+            self.b1 = button(self.sur,(150,0),'Level 1',level_1)
+            #self.b3 = button(self.screen,(350,0),'Level 2')
+            self.b2 = button(self.sur,(250,0),'Clear Level',empty)
+
             self.run()
             pygame.display.update()
             self.clock.tick(FPS)
