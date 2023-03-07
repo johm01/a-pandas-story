@@ -35,7 +35,6 @@ class Level:
 
                 global player
                 self.coins = []
-                # TODO ADD SPRITES TO SPRITE LIST FOR BUTTONS 
 
                 if col == 'x':
                     self.sprite_group[1].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
