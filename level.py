@@ -57,18 +57,7 @@ class Level:
 
                 if col == 't':
                     self.sprite_group[5].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]))
-    
-    def replace_level(self):
-        for row_index, row in enumerate(self.level):
-            for col_index,col in enumerate(row):
-                x = row_index * 64
-                y = col_index * 64
-
-                global player
-                self.cols = ['x','n','p','b','l','s','t','']
-
-                if col == 't':
-                    Tile(img='./assets/Tiles/dead.png',pos=(x,y),groups=[self.sprite_group[1]])
+   
                    
     def trap_collision(self,trap):
         for t in trap:
