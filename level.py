@@ -35,6 +35,7 @@ class Level:
 
                 global player
                 self.coins = []
+                # TODO ADD SPRITES TO SPRITE LIST FOR BUTTONS 
 
                 if col == 'x':
                     self.sprite_group[1].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
@@ -93,15 +94,21 @@ class Level:
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
+                # Button actions 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.b1.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
                         self.level = level_1
                         self.create_level()
                     
+                    if self.b3.collidepoint(pygame.mouse.get_pos()):
+                        print('starting level')
+                        self.level = grass_plains
+                        self.create_level()
+                    
                     if self.b2.collidepoint(pygame.mouse.get_pos()):
                         print('clearing level')
-                        # Replacing the current level
+                        # Clearing the current level
                         self.level = empty
                         for i in range(len(self.sprite_group)):
                             self.sprite_group[i].empty()
@@ -110,7 +117,7 @@ class Level:
 
             # Buttons
             self.b1 = button(self.sur,(150,0),'Level 1',level_1)
-            #self.b3 = button(self.screen,(350,0),'Level 2')
+            self.b3 = button(self.sur,(450,0),'Level 2',grass_plains)
             self.b2 = button(self.sur,(250,0),'Clear Level',empty)
 
             self.run()
