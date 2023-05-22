@@ -21,6 +21,13 @@ coin = pygame.sprite.Group()
 
 # Order of sprite groups
 orders = [bamboo_sprite,visable_sprite,collide_sprite,coin,player_sprite,trap_sprite]
+groups = {
+    "bamboo":bamboo_sprite,
+    "collide":collide_sprite,
+    "item":item,
+    "player":player_sprite,
+    "trap":trap_sprite
+}
 
 #### Level legend and Levels
 # x: grass_tile
