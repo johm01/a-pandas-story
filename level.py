@@ -38,25 +38,29 @@ class Level:
                 # TODO ADD SPRITES TO SPRITE LIST FOR BUTTONS 
 
                 if col == 'x':
-                    self.sprite_group[1].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
+                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
 
                 if col == 'n':
-                    self.tile_1 = Tile(img='./assets/Tiles/tile_2.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]])
+                    self.tile_1 = Tile(img='./assets/Tiles/tile_2.png',pos=(x,y))
                 
                 if col == 'p':
-                    player = Player(vel=4,health=5,groups=self.sprite_group[4],pos=(x,y),g=1.2,hp_mod=0)
+                    player = Player(vel=4,health=5,pos=(x,y),g=1.2,hp_mod=0,groups=self.sprite_group['player'])
 
                 if col == 'b':
-                    self.sprite_group[0].add(Tile(img=tile[2],groups=[self.sprite_group[0]],pos=(x,y)))
+                    self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
 
                 if col == 'l':
-                    self.sprite_group[3].add(Collectible(groups=[self.sprite_group[3]],pos=(x+25,y-45),type='coin'))
+                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='coin'))
 
                 if col == 's':
-                    self.sprite_group[2].add(Tile(img=tile[1],pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[2]]))
+                    self.sprite_group['collide'].add(Tile(img=tile[1],pos=(x,y)))
 
                 if col == 't':
-                    self.sprite_group[5].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y),groups=[self.sprite_group[1],self.sprite_group[5]]))
+                    self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
+
+                if col == 'm1':
+                    #self.sprite_group[6].add()
+                    pass
    
                    
     def trap_collision(self,trap):
