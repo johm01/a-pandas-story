@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.on_trap = False
         self.state = 'idle'
 
-        self.sprite_groups = orders
+        self.sprite_groups = s_groups 
 
     # Player Movement
     def movement(self,key):
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
     # Player and Bamboo interaction               
     def player_onbamboo(self):
         e = pygame.key.get_pressed()
-        for sprite in self.sprite_groups[0]:
+        for sprite in self.sprite_groups['bamboo']:
             if sprite.rect.colliderect(self.rect) and e[pygame.K_q] and not self.on_bamboo:
                 self.on_bamboo = True
                 self.falling = False
@@ -94,11 +94,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.direction.x * self.vel
         for s in sprite:
             if s.rect.colliderect(self.rect):
-                    # Player colliding with anything else 
-                    if self.direction.x < 0:
-                        self.rect.left = s.rect.right
-                    elif self.direction.x > 0:
-                        self.rect.right = s.rect.left
+                if self.direction.x < 0:
+                    self.rect.left = s.rect.right
+                elif self.direction.x > 0:
+                    self.rect.right = s.rect.left
  
     def health_check(self):
         if self.health == 0 and self.is_dead == False:
@@ -107,7 +106,7 @@ class Player(pygame.sprite.Sprite):
         
         # Player dead 
         if self.is_dead:
-            self.sprite_groups[4].empty()
+            self.sprite_groups['player'].empty()
 
     def p_gravity(self):
         if self.falling:
@@ -117,5 +116,5 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
-        self.collision_h(self.sprite_groups[2])
-        self.collision_v(self.sprite_groups[2])
+        self.collision_h(self.sprite_groups['collide'])
+        self.collision_v(self.sprite_groups['collide'])
