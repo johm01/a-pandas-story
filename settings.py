@@ -20,7 +20,6 @@ trap_sprite = pygame.sprite.Group()
 coin = pygame.sprite.Group()
 
 # Order of sprite groups
-orders = [bamboo_sprite,visable_sprite,collide_sprite,coin,player_sprite,trap_sprite]
 groups = {
     "bamboo":bamboo_sprite,
     "collide":collide_sprite,
