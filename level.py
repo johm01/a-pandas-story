@@ -1,6 +1,6 @@
 from settings import *
 import pygame 
-from Tile import Tile
+from objects import Tile,Mob,Trap
 from player import Player
 
 def button(screen,pos,text,level):
@@ -17,7 +17,7 @@ def button(screen,pos,text,level):
 
 class Level:
     def __init__(self) -> None:
-        self.sprite_group = orders
+        self.sprite_group = s_groups
         self.bg = pygame.image.load('./assets/Tiles/background.png').convert_alpha()
         self.sur = pygame.display.get_surface()
         self.state = None
@@ -61,8 +61,7 @@ class Level:
                 if col == 'm1':
                     #self.sprite_group[6].add()
                     pass
-   
-                   
+    
     def trap_collision(self,trap):
         for t in trap:
             if t.rect.colliderect(player.rect):
@@ -103,7 +102,7 @@ class Level:
                         print('clearing level')
                         # Clearing the current level
                         self.level = empty
-                        for i in range(len(self.sprite_group)):
+                        for i in self.sprite_group:
                             self.sprite_group[i].empty()
             
             self.sur.blit(self.bg,(0,0))
@@ -119,19 +118,19 @@ class Level:
 
     def run(self):
         # Drawing Sprites
-        for i in range(len(self.sprite_group)):
+        for i in self.sprite_group:  
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        self.trap_collision(self.sprite_group[5])
+        self.trap_collision(self.sprite_group["trap"])
     
 class Collectible(pygame.sprite.Sprite):
-    def __init__(self, groups, pos, type) -> None:
-        super().__init__(groups)
+    def __init__(self,pos,type) -> None:
+        super().__init__()
         self.sur = pygame.display.get_surface()
         self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.sprite_groups = orders
+        self.sprite_groups = s_groups
         self.type = type
         self.collected = False
 
@@ -143,7 +142,8 @@ class Collectible(pygame.sprite.Sprite):
             self.image = pygame.image.load('./assets/Tiles/can.png').convert_alpha()
 
     def collision(self):
-        for s in self.sprite_groups[4]:
+        # Player sprite colliding with item sprite 
+        for s in self.sprite_groups['player']:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
                 self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
                 self.collected = True 
