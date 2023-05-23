@@ -1,20 +1,24 @@
 import pygame 
 from settings import * 
 
-class Mob(pygame.sprite.Sprite):
-    def __init__(self,img,pos,groups,type):
-        super().__init__(groups)
+class Mob_1(pygame.sprite.Sprite):
+    def __init__(self,img,pos,type,target):
+        super().__init__()
         self.is_dead = False
         self.image = pygame.image.load(img).convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
         self.type = type 
-        self.sprite_group = orders
+        self.target = target
+        self.sprite_group = s_groups
 
-        # If mob is dead 
-        if self.is_dead:
-            for i in range(len(groups)):
-                groups[i].sprite_group.empty()
-
+    def mob_collision(self,player):
+        for t in self.type:
+            if t.rect.colliderect(player.rect):
+                print('yes')
+    
+    def update(self):
+        self.mob_collision(self.target)
+        
 class Tile(pygame.sprite.Sprite):
     def __init__(self,img,pos,groups):
         super().__init__(groups)
