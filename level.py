@@ -1,6 +1,6 @@
 from settings import *
 import pygame 
-from objects import Tile,Mob,Trap
+from objects import Tile,Mob_1,Trap
 from player import Player
 
 def button(screen,pos,text,level):
@@ -41,7 +41,7 @@ class Level:
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
 
                 if col == 'n':
-                    self.tile_1 = Tile(img='./assets/Tiles/tile_2.png',pos=(x,y))
+                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
                 
                 if col == 'p':
                     player = Player(vel=4,health=5,pos=(x,y),g=1.2,hp_mod=0,groups=self.sprite_group['player'])
@@ -59,8 +59,8 @@ class Level:
                     self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
 
                 if col == 'm1':
-                    #self.sprite_group[6].add()
-                    pass
+                    self.sprite_group["mob_1"].add(Mob_1(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
+                    
     
     def trap_collision(self,trap):
         for t in trap:
