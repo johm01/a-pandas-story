@@ -14,6 +14,7 @@ class Player(pygame.sprite.Sprite):
         self.vel = vel
         self.health = health 
         self.hp_mod = hp_mod
+        self.recoil_mod = .5 
 
         # Player states
         self.on_bamboo = False
@@ -26,6 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.state = 'idle'
 
         self.sprite_groups = s_groups 
+        
+        self.can_hit = [self.sprite_groups['collide']]
 
     # Player Movement
     def movement(self,key):
@@ -77,27 +80,29 @@ class Player(pygame.sprite.Sprite):
             print('Off Bamboo',self.on_bamboo)   
 
     # Vertical Collision
-    def collision_v(self,sprite):
+    def collision_v(self,sprite: list):
         self.p_gravity()
-        for s in sprite:
-            if s.rect.colliderect(self.rect):
-                self.is_ground = True
-                if self.direction.y > 0: 
-                    self.rect.bottom = s.rect.top
-                    self.direction.y = 0
-                elif self.direction.y < 0:
-                    self.rect.top = s.rect.bottom
-                    self.direction.y = 0
+        for s in range(len(sprite)):
+            for sprites in self.can_hit[s]:
+                if sprites.rect.colliderect(self.rect):
+                    self.is_ground = True
+                    if self.direction.y > 0: 
+                        self.rect.bottom = sprites.rect.top
+                        self.direction.y = 0
+                    elif self.direction.y < 0:
+                        self.rect.top = sprites.rect.bottom
+                        self.direction.y = 0
 
     # Horizontal Collision
     def collision_h(self,sprite):
         self.rect.x += self.direction.x * self.vel
-        for s in sprite:
-            if s.rect.colliderect(self.rect):
-                if self.direction.x < 0:
-                    self.rect.left = s.rect.right
-                elif self.direction.x > 0:
-                    self.rect.right = s.rect.left
+        for s in range(len(sprite)):
+            for sprites in self.can_hit[s]:
+                if sprites.rect.colliderect(self.rect):
+                    if self.direction.x < 0:
+                        self.rect.left = sprites.rect.right
+                    elif self.direction.x > 0:
+                        self.rect.right = sprites.rect.left
  
     def health_check(self):
         if self.health == 0 and self.is_dead == False:
@@ -116,5 +121,5 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
-        self.collision_h(self.sprite_groups['collide'])
-        self.collision_v(self.sprite_groups['collide'])
+        self.collision_h(self.can_hit)
+        self.collision_v(self.can_hit)
