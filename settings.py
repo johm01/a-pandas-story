@@ -17,15 +17,20 @@ collide_sprite = pygame.sprite.Group()
 player_sprite = pygame.sprite.Group()
 bamboo_sprite = pygame.sprite.Group()
 trap_sprite = pygame.sprite.Group()
-coin = pygame.sprite.Group()
+item = pygame.sprite.Group()
+
+# Enemy groups
+enemy1_sprite = pygame.sprite.Group()
 
 # Order of sprite groups
-groups = {
+s_groups = {
+    "visable":visable_sprite,
     "bamboo":bamboo_sprite,
     "collide":collide_sprite,
     "item":item,
     "player":player_sprite,
-    "trap":trap_sprite
+    "trap":trap_sprite,
+    "mob_1":enemy1_sprite
 }
 
 #### Level legend and Levels
@@ -35,15 +40,15 @@ groups = {
 # l: coin
 # s: stone slab
 # t: trap_1 
-
+# m1: mob_1
 level_1 = [
     ['','','','','p','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
-    ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
+    ['','','','','m1','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','t','x','n','n','n','n','n','n','','','','','','',''],
-    ['','','','','b','b','x','n','n','n','n','n','n','','','','','','',''],
+    ['','','','','b','b','','','','','','','','','','','','','',''],
     ['','','','s','','t','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','t','x','n','n','n','n','n','n','n','','','','','',''],
     ['','','','','s','','x','n','n','n','n','n','n','','','','','','',''],
@@ -52,7 +57,7 @@ level_1 = [
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','l','','','','x','n','n','n','n','n','n','','','','','','',''],
-    ['','','l','','s','','x','n','n','n','n','n','n','','','','','','',''],
+    ['','','l','s','s','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
@@ -98,29 +103,21 @@ grass_plains = [
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
 ]
+
 # Reused Functions 
 def gravity(self,falling):
      if falling == True:
           self.direction.y += self.gravity
           self.rect.y += self.direction.y
-          
-def collision_v(self,sprite):
-        gravity(self,self.is_falling)
-        for s in sprite:
-            if s.rect.colliderect(self.rect):
-                self.is_ground = True
-                if self.direction.y > 0: 
-                    self.rect.bottom = s.rect.top
-                    self.direction.y = 0
-                elif self.direction.y < 0:
-                    self.rect.top = s.rect.bottom
-                    self.direction.y = 0
 
-def collision_h(self,sprite):
-        self.rect.x += self.direction.x * self.vel
-        for s in sprite:
-            if s.rect.colliderect(self.rect):
-                if self.direction.x < 0:
-                    self.rect.left = s.rect.right
-                elif self.direction.x > 0:
-                    self.rect.right = s.rect.left
+def button(screen,pos,text,level):
+    font = pygame.font.SysFont("Arial",25)
+    text_r = font.render(text,1,(255,255,0))
+    x, y, w , h = text_r.get_rect()
+    x, y = pos
+    pygame.draw.line(screen, (150, 150, 150), (x, y), (x + w , y), 5)
+    pygame.draw.line(screen, (150, 150, 150), (x, y - 2), (x, y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x, y + h), (x + w , y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x + w , y+h), [x + w , y], 5)
+    pygame.draw.rect(screen, (100, 100, 100), (x, y, w , h))
+    return screen.blit(text_r, (x, y))
