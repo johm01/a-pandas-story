@@ -98,3 +98,29 @@ grass_plains = [
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
 ]
+# Reused Functions 
+def gravity(self,falling):
+     if falling == True:
+          self.direction.y += self.gravity
+          self.rect.y += self.direction.y
+          
+def collision_v(self,sprite):
+        gravity(self,self.is_falling)
+        for s in sprite:
+            if s.rect.colliderect(self.rect):
+                self.is_ground = True
+                if self.direction.y > 0: 
+                    self.rect.bottom = s.rect.top
+                    self.direction.y = 0
+                elif self.direction.y < 0:
+                    self.rect.top = s.rect.bottom
+                    self.direction.y = 0
+
+def collision_h(self,sprite):
+        self.rect.x += self.direction.x * self.vel
+        for s in sprite:
+            if s.rect.colliderect(self.rect):
+                if self.direction.x < 0:
+                    self.rect.left = s.rect.right
+                elif self.direction.x > 0:
+                    self.rect.right = s.rect.left
