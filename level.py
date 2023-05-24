@@ -49,23 +49,25 @@ class Level:
 
                 if col == 'm1':
                     self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
+    
 
     def empty_level(self):
         for i in self.sprite_group:
             self.sprite_group[i].empty()
 
+    def respawn(self):
+        self.empty_level()
+        self.create_level()
+        
     def trap_collision(self,trap):
         for t in trap:
             if t.rect.colliderect(player.rect):
                 # Checking health everytime we hit a trap instead of constantly checking it within the player update method
                 player.health -= player.health
                 player.health_check()
-                self.empty_level()
-                self.create_level()
-                
+                self.respawn()
     # GUI
     def create_ui(self):
-
         self.b1 = button(self.sur,(150,0),'Level 1')
         self.b3 = button(self.sur,(450,0),'Level 2')
         self.b2 = button(self.sur,(250,0),'Clear Level')
