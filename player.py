@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.falling = True
         self.is_dead = False
         self.on_trap = False
+        self.is_hit = True 
         self.state = 'idle'
 
         self.sprite_groups = s_groups 
@@ -58,7 +59,6 @@ class Player(pygame.sprite.Sprite):
                     self.direction.x = -20 * self.knockback_mod
                 elif self.direction.x < 0:
                     self.direction.x = 20 * self.knockback_mod
-                print('yes')
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
@@ -114,18 +114,6 @@ class Player(pygame.sprite.Sprite):
                             self.rect.left = sprites.rect.right
                         elif self.direction.x > 0:
                             self.rect.right = sprites.rect.left
- 
-    def health_check(self):
-        if self.health == 0 and self.is_dead == False:
-            print('player is dead')
-            self.is_dead = True
-            self.direction.x = 0
-            self.direction.y = 0
-        
-        # Player dead 
-        if self.is_dead:
-            self.sprite_groups['player'].empty()
-        
 
     def p_gravity(self):
         if self.falling:
