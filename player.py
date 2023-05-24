@@ -7,7 +7,9 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
 
          # Player image 
-        self.image = pygame.image.load(self.images[0]).convert_alpha()
+        self.pos = pos
+        self.img = './assets/Player/player.png'
+        self.image = pygame.image.load(self.img).convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.sur = pygame.display.get_surface()
         self.direction = pygame.math.Vector2(0,0)
@@ -32,6 +34,13 @@ class Player(pygame.sprite.Sprite):
         
         self.can_hit = [self.sprite_groups['collide']]
 
+        self.animations = {
+            'idle':'./assets/Player/player.png',
+            'right':'./assets/Player/player.png',
+            'left':'./assets/Player/player_L.png',
+            'jump':'./assets/Player/player.png',
+        }
+
     # Player Movement
     def movement(self,key):
         if key[pygame.K_RIGHT] and self.moving_x:
@@ -42,13 +51,17 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1
         else:
             self.direction.x = 0
+            self.state = 'idle'
 
         # Player jump
         if key[pygame.K_SPACE] and self.is_ground:
             self.state = 'jump'
             self.is_ground = False
             self.jump()
-                
+            
+        # Updating image
+        self.image = pygame.image.load(self.animations[self.state]).convert_alpha()
+
     def jump(self):
         self.direction.y = -20
 
