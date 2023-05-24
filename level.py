@@ -49,14 +49,19 @@ class Level:
 
                 if col == 'm1':
                     self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
-                    
-    
+
+    def empty_level(self):
+        for i in self.sprite_group:
+            self.sprite_group[i].empty()
+
     def trap_collision(self,trap):
         for t in trap:
             if t.rect.colliderect(player.rect):
                 # Checking health everytime we hit a trap instead of constantly checking it within the player update method
                 player.health -= player.health
                 player.health_check()
+                self.empty_level()
+                self.create_level()
                 
     # GUI
     def create_ui(self):
@@ -87,8 +92,7 @@ class Level:
                         print('clearing level')
                         # Clearing the current level
                         self.level = empty
-                        for i in self.sprite_group:
-                            self.sprite_group[i].empty()
+                        self.empty_level()
 
             # DO NOT SWAP THESE LOL IT WILL GIVE BRAIN ACHE 
             self.sur.blit(self.bg,(0,0))
