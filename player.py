@@ -9,12 +9,13 @@ class Player(pygame.sprite.Sprite):
          # Player image 
         self.image = pygame.image.load(self.images[0]).convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
+        self.sur = pygame.display.get_surface()
         self.direction = pygame.math.Vector2(0,0)
         self.gravity = g
         self.vel = vel
         self.health = health 
         self.hp_mod = hp_mod
-        self.recoil_mod = .5 
+        self.knockback_mod = 1
 
         # Player states
         self.on_bamboo = False
@@ -49,6 +50,15 @@ class Player(pygame.sprite.Sprite):
                 
     def jump(self):
         self.direction.y = -20
+
+    def player_mob_collision(self):
+        for sprite in self.sprite_groups['mob_1']:
+            if sprite.rect.colliderect(self.rect):
+                if self.direction.x > 0:
+                    self.direction.x = -20 * self.knockback_mod
+                elif self.direction.x < 0:
+                    self.direction.x = 20 * self.knockback_mod
+                print('yes')
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
@@ -80,38 +90,42 @@ class Player(pygame.sprite.Sprite):
             print('Off Bamboo',self.on_bamboo)   
 
     # Vertical Collision
-    def collision_v(self,sprite: list):
-        self.p_gravity()
-        for s in range(len(sprite)):
-            for sprites in self.can_hit[s]:
-                if sprites.rect.colliderect(self.rect):
-                    self.is_ground = True
-                    if self.direction.y > 0: 
-                        self.rect.bottom = sprites.rect.top
-                        self.direction.y = 0
-                    elif self.direction.y < 0:
-                        self.rect.top = sprites.rect.bottom
-                        self.direction.y = 0
-
-    # Horizontal Collision
-    def collision_h(self,sprite):
-        self.rect.x += self.direction.x * self.vel
-        for s in range(len(sprite)):
-            for sprites in self.can_hit[s]:
-                if sprites.rect.colliderect(self.rect):
-                    if self.direction.x < 0:
-                        self.rect.left = sprites.rect.right
-                    elif self.direction.x > 0:
-                        self.rect.right = sprites.rect.left
+    def collision_floor_wall(self,sprite: list,direction):
+        # Vertical Collision 
+        if direction == 'vertical':
+            self.p_gravity()
+            for s in range(len(sprite)):
+                for sprites in self.can_hit[s]:
+                    if sprites.rect.colliderect(self.rect):
+                        self.is_ground = True
+                        if self.direction.y > 0: 
+                            self.rect.bottom = sprites.rect.top
+                            self.direction.y = 0
+                        elif self.direction.y < 0:
+                            self.rect.top = sprites.rect.bottom
+                            self.direction.y = 0
+        # Horizontal Collision
+        if direction == 'horizontal':
+            self.rect.x += self.direction.x * self.vel
+            for s in range(len(sprite)):
+                for sprites in self.can_hit[s]:
+                    if sprites.rect.colliderect(self.rect):
+                        if self.direction.x < 0:
+                            self.rect.left = sprites.rect.right
+                        elif self.direction.x > 0:
+                            self.rect.right = sprites.rect.left
  
     def health_check(self):
         if self.health == 0 and self.is_dead == False:
             print('player is dead')
             self.is_dead = True
+            self.direction.x = 0
+            self.direction.y = 0
         
         # Player dead 
         if self.is_dead:
             self.sprite_groups['player'].empty()
+        
 
     def p_gravity(self):
         if self.falling:
@@ -121,5 +135,6 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
-        self.collision_h(self.can_hit)
-        self.collision_v(self.can_hit)
+        self.player_mob_collision()
+        self.collision_floor_wall(self.can_hit,'vertical')
+        self.collision_floor_wall(self.can_hit,'horizontal')
