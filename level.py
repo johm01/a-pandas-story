@@ -1,6 +1,7 @@
 from settings import *
 import pygame 
-from objects import Tile,Mob_1,Trap
+from objects import Tile,Trap
+from mob import Mob
 from player import Player
 
 class Level:
@@ -23,7 +24,6 @@ class Level:
 
                 global player
                 self.coins = []
-                # TODO ADD SPRITES TO SPRITE LIST FOR BUTTONS 
 
                 if col == 'x':
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
@@ -32,7 +32,8 @@ class Level:
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
                 
                 if col == 'p':
-                    player = Player(vel=4,health=5,pos=(x,y),g=1.2,hp_mod=0,groups=self.sprite_group['player'])
+                    player = Player(vel=4,health=5,pos=(x,y),g=1.45,hp_mod=0,groups=[self.sprite_group['player']])
+                    self.b4 = button(self.sur,(550,0),'Clear Level')
 
                 if col == 'b':
                     self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
@@ -47,26 +48,22 @@ class Level:
                     self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
 
                 if col == 'm1':
-                    self.sprite_group["mob_1"].add(Mob_1(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
+                    self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
                     
     
     def trap_collision(self,trap):
         for t in trap:
             if t.rect.colliderect(player.rect):
                 # Checking health everytime we hit a trap instead of constantly checking it within the player update method
-                player.health -= 1
+                player.health -= player.health
                 player.health_check()
-                if player.direction.y > 0: 
-                        player.rect.bottom = t.rect.top
-                        player.direction.y = 0
-                elif player.direction.y < 0:
-                        player.rect.top = t.rect.bottom
-                        player.direction.y = 0
+                
+    # GUI
+    def create_ui(self):
 
-                if player.direction.x < 0:
-                        player.rect.left = t.rect.right
-                elif player.direction.x > 0:
-                        player.rect.right = t.rect.left
+        self.b1 = button(self.sur,(150,0),'Level 1')
+        self.b3 = button(self.sur,(450,0),'Level 2')
+        self.b2 = button(self.sur,(250,0),'Clear Level')
 
     def start_game(self):
         while True:
@@ -92,13 +89,10 @@ class Level:
                         self.level = empty
                         for i in self.sprite_group:
                             self.sprite_group[i].empty()
-            
-            self.sur.blit(self.bg,(0,0))
 
-            # Buttons
-            self.b1 = button(self.sur,(150,0),'Level 1',level_1)
-            self.b3 = button(self.sur,(450,0),'Level 2',grass_plains)
-            self.b2 = button(self.sur,(250,0),'Clear Level',empty)
+            # DO NOT SWAP THESE LOL IT WILL GIVE BRAIN ACHE 
+            self.sur.blit(self.bg,(0,0))
+            self.create_ui()
 
             self.run()
             pygame.display.update()
@@ -133,7 +127,7 @@ class Collectible(pygame.sprite.Sprite):
         # Player sprite colliding with item sprite 
         for s in self.sprite_groups['player']:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
-                self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                self.image = pygame.image.load('./assets/Tiles/leaf.png').convert_alpha()
                 self.collected = True 
             # If the player walks over the already collected coin 
             elif s.rect.colliderect(self.rect) and self.type == 'coin' and self.collected:
