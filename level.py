@@ -32,7 +32,7 @@ class Level:
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
                 
                 if col == 'p':
-                    player = Player(vel=4,health=5,pos=(x,y),g=1.45,hp_mod=0,groups=[self.sprite_group['player']])
+                    player = Player(vel=4,health=5,pos=(x,y),g=1.25,hp_mod=0,groups=[self.sprite_group['player']])
                     self.b4 = button(self.sur,(550,0),'Clear Level')
 
                 if col == 'b':
@@ -50,22 +50,27 @@ class Level:
                 if col == 'm1':
                     self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
     
-
     def empty_level(self):
-        for i in self.sprite_group:
+        for i in self.sprite_group:  
             self.sprite_group[i].empty()
 
     def respawn(self):
         self.empty_level()
         self.create_level()
-        
-    def trap_collision(self,trap):
-        for t in trap:
-            if t.rect.colliderect(player.rect):
-                # Checking health everytime we hit a trap instead of constantly checking it within the player update method
-                player.health -= player.health
-                player.health_check()
-                self.respawn()
+
+    # Player obj collision
+    def obj_collision(self,obj):
+        for t in self.sprite_group[obj]:
+            if obj == 'trap':
+                if t.rect.colliderect(player.rect):
+                    player.health -= player.health
+                    self.respawn()
+            elif obj == 'mob_1':
+                if t.rect.colliderect(player.rect):
+                    player.health -= 1
+                    if player.health <= 0:
+                        self.respawn()
+
     # GUI
     def create_ui(self):
         self.b1 = button(self.sur,(150,0),'Level 1')
@@ -110,8 +115,9 @@ class Level:
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        self.trap_collision(self.sprite_group["trap"])
-    
+        self.obj_collision('trap')
+        self.obj_collision('mob_1')
+
 class Collectible(pygame.sprite.Sprite):
     def __init__(self,pos,type) -> None:
         super().__init__()
