@@ -6,6 +6,25 @@ import pygame
 WIDTH, HEIGHT = 1280,720
 FPS = 60
 
+# Reused Functions 
+def gravity(self,falling):
+     if falling == True:
+          self.direction.y += self.gravity
+          self.rect.y += self.direction.y
+
+def button(screen,pos,text):
+    font = pygame.font.SysFont("Arial",25)
+    text_r = font.render(text,1,(255,255,0))
+    x, y, w , h = text_r.get_rect()
+    x, y = pos
+    pygame.draw.line(screen, (150, 150, 150), (x, y), (x + w , y), 5)
+    pygame.draw.line(screen, (150, 150, 150), (x, y - 2), (x, y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x, y + h), (x + w , y + h), 5)
+    pygame.draw.line(screen, (50, 50, 50), (x + w , y+h), [x + w , y], 5)
+    pygame.draw.rect(screen, (100, 100, 100), (x, y, w , h))
+    return screen.blit(text_r, (x, y))
+
+# Game assets 
 player_img = ['./assets/Player/player.png','./assets/Player/player.png']
 bamboo_img = ['./assets/Player/bamboo_1.png']
 tiles_img = ['./assets/Tiles/tile1.png','./assets/Tiles/slab.png','./assets/Player/bamboo_1.png']
@@ -41,14 +60,15 @@ s_groups = {
 # s: stone slab
 # t: trap_1 
 # m1: mob_1
+
 level_1 = [
-    ['','','','','p','','x','n','n','n','n','n','n','','','','','','',''],
+    ['','','','p','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
-    ['','','','','m1','','x','n','n','n','n','n','n','','','','','','',''],
+    ['','','','','','m1','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','t','x','n','n','n','n','n','n','','','','','','',''],
-    ['','','','','b','b','','','','','','','','','','','','','',''],
+    ['','','','','b','b','x','','','','','','','','','','','','',''],
     ['','','','s','','t','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','t','x','n','n','n','n','n','n','n','','','','','',''],
     ['','','','','s','','x','n','n','n','n','n','n','','','','','','',''],
@@ -103,21 +123,7 @@ grass_plains = [
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
     ['','','','','','','x','n','n','n','n','n','n','','','','','','',''],
 ]
-
-# Reused Functions 
-def gravity(self,falling):
-     if falling == True:
-          self.direction.y += self.gravity
-          self.rect.y += self.direction.y
-
-def button(screen,pos,text,level):
-    font = pygame.font.SysFont("Arial",25)
-    text_r = font.render(text,1,(255,255,0))
-    x, y, w , h = text_r.get_rect()
-    x, y = pos
-    pygame.draw.line(screen, (150, 150, 150), (x, y), (x + w , y), 5)
-    pygame.draw.line(screen, (150, 150, 150), (x, y - 2), (x, y + h), 5)
-    pygame.draw.line(screen, (50, 50, 50), (x, y + h), (x + w , y + h), 5)
-    pygame.draw.line(screen, (50, 50, 50), (x + w , y+h), [x + w , y], 5)
-    pygame.draw.rect(screen, (100, 100, 100), (x, y, w , h))
-    return screen.blit(text_r, (x, y))
+#TODO
+# Design 1 more level
+# Fix sprite sizes 
+# Add falling leaves effect
