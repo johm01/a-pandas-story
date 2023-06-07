@@ -42,7 +42,7 @@ class Level:
                     self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='fruit'))
 
                 if col == 'r':
-                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='relic'))
+                    self.sprite_group['relic'].add(Collectible(pos=(x+25,y-45),type='relic'))
                 
                 if col == 'f':
                     self.sprite_group['flag'].add(Flag(pos=(x+25,y-35)))
@@ -78,14 +78,15 @@ class Level:
                         self.respawn()
             elif obj == 'flag':
                 if t.rect.colliderect(player.rect):
-                    self.level = grass_plains
-                    self.respawn()
+                    if player.reclic_collected == len(self.sprite_group['relic']):
+                        self.level = grass_plains
+                        self.respawn()
 
     # GUI
     def create_ui(self):
         self.b1 = button(self.sur,(150,0),'Level 1')
         self.b3 = button(self.sur,(450,0),'Level 2')
-        self.b2 = button(self.sur,(250,0),'Clear Level')
+        self.b2 = button(self.sur,(250,0),'Emtpy Level')
 
     def start_game(self):
         while True:
@@ -140,6 +141,8 @@ class Collectible(pygame.sprite.Sprite):
         self.type = type
         self.fruit_collected = False
         self.fruit_gain = 2
+        self.relic_gain = 1
+        self.relic_collected = False
 
         if self.type == 'coin':
             self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
@@ -163,6 +166,14 @@ class Collectible(pygame.sprite.Sprite):
                         self.fruit_gain = 0
                 else:
                     player.health += player.hp_mod
+
+            if s.rect.colliderect(self.rect) and self.type == 'relic':
+                player.reclic_collected += self.relic_gain
+                self.relic_collected = True
+                print(player.reclic_collected)
+                if self.relic_collected:
+                    self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                    self.relic_gain = 0
 
     def update(self):
         self.collision()
