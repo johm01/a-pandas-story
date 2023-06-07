@@ -39,7 +39,13 @@ class Level:
                     self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
 
                 if col == 'l':
-                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='coin'))
+                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='fruit'))
+
+                if col == 'r':
+                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='relic'))
+                
+                if col == 'f':
+                    self.sprite_group['flag'].add(Flag(pos=(x+25,y-35)))
 
                 if col == 's':
                     self.sprite_group['collide'].add(Tile(img=tile[1],pos=(x,y)))
@@ -70,6 +76,10 @@ class Level:
                     player.health -= 1
                     if player.health <= 0:
                         self.respawn()
+            elif obj == 'flag':
+                if t.rect.colliderect(player.rect):
+                    self.level = grass_plains
+                    self.respawn()
 
     # GUI
     def create_ui(self):
@@ -89,6 +99,7 @@ class Level:
                         print('starting level')
                         self.level = level_1
                         self.create_level()
+        
                     
                     if self.b3.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
@@ -97,7 +108,7 @@ class Level:
                     
                     if self.b2.collidepoint(pygame.mouse.get_pos()):
                         print('clearing level')
-                        # Clearing the current level
+                        # Clearing the current level 
                         self.level = empty
                         self.empty_level()
 
@@ -117,6 +128,7 @@ class Level:
 
         self.obj_collision('trap')
         self.obj_collision('mob_1')
+        self.obj_collision('flag')
 
 class Collectible(pygame.sprite.Sprite):
     def __init__(self,pos,type) -> None:
@@ -126,31 +138,39 @@ class Collectible(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.sprite_groups = s_groups
         self.type = type
-        self.collected = False
+        self.fruit_collected = False
+        self.fruit_gain = 2
 
         if self.type == 'coin':
             self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         elif self.type == 'fruit':
             self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
-        elif self.type == 'soda':
-            self.image = pygame.image.load('./assets/Tiles/can.png').convert_alpha()
+        elif self.type == 'relic':
+            self.image = pygame.image.load('./assets/Tiles/relic.png').convert_alpha()
 
     def collision(self):
         # Player sprite colliding with item sprite 
         for s in self.sprite_groups['player']:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
-                self.image = pygame.image.load('./assets/Tiles/leaf.png').convert_alpha()
-                self.collected = True 
-            # If the player walks over the already collected coin 
-            elif s.rect.colliderect(self.rect) and self.type == 'coin' and self.collected:
-                pass
-
+                self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+         
             if s.rect.colliderect(self.rect) and self.type == 'fruit':
-                self.collected = True 
                 if not player.is_dead and player.health >= 1:
-                    player.health += 2
+                    player.health += self.fruit_gain
+                    self.fruit_collected = True
+                    if self.fruit_collected:
+                        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                        self.fruit_gain = 0
                 else:
                     player.health += player.hp_mod
 
     def update(self):
         self.collision()
+
+# Flag to move onto the next level
+class Flag(pygame.sprite.Sprite):
+    def __init__(self,pos) -> None:
+        super().__init__()
+        self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+    
