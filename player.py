@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.vel = vel
         self.health = health 
         self.hp_mod = hp_mod
-        self.knockback_mod = 1
+        self.knockback_mod = 1 
 
         # Player states
         self.on_bamboo = False
@@ -51,15 +51,12 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1
         else:
             self.direction.x = 0
-            self.state = 'idle'
 
         # Player jump
         if key[pygame.K_SPACE] and self.is_ground:
             self.state = 'jump'
             self.is_ground = False
             self.jump()
-            
-        # Updating image
         self.image = pygame.image.load(self.animations[self.state]).convert_alpha()
 
     def jump(self):
