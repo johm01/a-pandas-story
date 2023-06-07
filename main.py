@@ -13,12 +13,7 @@ class Game:
 
         self.start = False
         self.level = True
-        self.lev = Level(level_1)
-
-    def run(self): 
-        # Main game loop
-        self.screen.blit(self.bg,(0,0)) 
+        self.lev = Level()
      
 if __name__ == '__main__':
     game = Game()
-    game.run()
