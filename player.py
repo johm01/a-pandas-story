@@ -1,5 +1,6 @@
 import pygame 
 from settings import *
+import time 
 
 class Player(pygame.sprite.Sprite):
     images = player_img
@@ -7,6 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
 
          # Player image 
+        self.sprite_groups = s_groups 
         self.pos = pos
         self.img = './assets/Player/player.png'
         self.image = pygame.image.load(self.img).convert_alpha()
@@ -18,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.health = health 
         self.hp_mod = hp_mod
         self.knockback_mod = 1 
+        self.reclic_collected = 0
 
         # Player states
         self.on_bamboo = False
@@ -29,10 +32,9 @@ class Player(pygame.sprite.Sprite):
         self.on_trap = False
         self.is_hit = True 
         self.state = 'idle'
-
-        self.sprite_groups = s_groups 
         
-        self.can_hit = [self.sprite_groups['collide']]
+        # Mobs the player will have collisions with 
+        self.can_hit = ['mob_1','mob_2']
 
         self.animations = {
             'idle':'./assets/Player/player.png',
@@ -66,9 +68,9 @@ class Player(pygame.sprite.Sprite):
         for sprite in self.sprite_groups['mob_1']:
             if sprite.rect.colliderect(self.rect):
                 if self.direction.x > 0:
-                    self.direction.x = -20 * self.knockback_mod
+                    self.direction.x = -20 * self.knockback_mod 
                 elif self.direction.x < 0:
-                    self.direction.x = 20 * self.knockback_mod
+                    self.direction.x = 20 * self.knockback_mod 
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
