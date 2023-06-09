@@ -2,26 +2,27 @@ import pygame
 from settings import * 
 
 class Mob(pygame.sprite.Sprite):
-    def __init__(self,img,pos,type,target):
+    def __init__(self,img,pos,type):
         super().__init__()
         self.image = pygame.image.load(img).convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
         self.type = type 
-        self.target = target
         self.sprite_group = s_groups
 
-        self.direction = pygame.math.Vector2(0,0)
-        self.vel = 0.3
-        self.gravity = 4.8
-        self.is_dead = False
+        self.direction = pygame.math.Vector2(0,0) 
+
+        self.is_moving = True
+        self.gravity = 4.3
+        self.vel = -2
         self.is_falling = True
         self.is_ground = False
-
-        self.can_hit = []
     
-    def mob_collision(self,direction: str):
-        # Mob collision 
-        if direction == 'horizontal':
+    def mob_movement(self):
+            if self.is_moving:
+                self.direction.x = 1
+
+    def mob_floor_collision(self,direction: str):
+        if direction == 'vertical':
             gravity(self,self.is_falling)
             for i in self.sprite_group['collide']:
                 if i.rect.colliderect(self.rect):
@@ -33,7 +34,7 @@ class Mob(pygame.sprite.Sprite):
                         self.rect.top = i.rect.bottom
                         self.direction.y = 0
 
-        if direction == 'vertical':
+        if direction == 'horizontal':
             self.rect.x += self.direction.x * self.vel
             for sprites in self.sprite_group['collide']:
                 if sprites.rect.colliderect(self.rect):
@@ -42,7 +43,15 @@ class Mob(pygame.sprite.Sprite):
                     elif self.direction.x > 0:
                         self.rect.right = sprites.rect.left
 
+    # Checking wether we want the mob to be passive or aggressive 
+    def check_mob(self):
+        if self.type == 'mob_1':
+            self.mob_movement()
+            self.mob_floor_collision('vertical')
+            self.mob_floor_collision('horizontal')
+        elif self.type == 'mob_2':
+            self.mob_floor_collision('vertical')
+            self.mob_floor_collision('horizontal')
 
     def update(self):
-        self.mob_collision('vertical')
-        self.mob_collision('horizontal')
+        self.check_mob()
