@@ -23,7 +23,6 @@ class Level:
                 y = col_index * 64
 
                 global player
-                self.coins = []
 
                 if col == 'x':
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
@@ -33,7 +32,6 @@ class Level:
                 
                 if col == 'p':
                     player = Player(vel=4,health=5,pos=(x,y),g=1.25,hp_mod=0,groups=[self.sprite_group['player']])
-                    self.b4 = button(self.sur,(550,0),'Clear Level')
 
                 if col == 'b':
                     self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
@@ -42,10 +40,10 @@ class Level:
                     self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='fruit'))
 
                 if col == 'r':
-                    self.sprite_group['relic'].add(Collectible(pos=(x+25,y-45),type='relic'))
+                    self.sprite_group['relic'].add(Collectible(pos=(x+2.5,y-35),type='relic'))
                 
                 if col == 'f':
-                    self.sprite_group['flag'].add(Flag(pos=(x+25,y-35)))
+                    self.sprite_group['flag'].add(Flag(pos=(x,y-62.5)))
 
                 if col == 's':
                     self.sprite_group['collide'].add(Tile(img=tile[1],pos=(x,y)))
@@ -53,8 +51,12 @@ class Level:
                 if col == 't':
                     self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
 
+                # Create different mobs for passive and moving mobs 
                 if col == 'm1':
-                    self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type=self.sprite_group["mob_1"],target=player))
+                    self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1'))
+                if col == 'm2':
+                    self.sprite_group["mob_2"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2'))
+    
     
     def empty_level(self):
         for i in self.sprite_group:  
@@ -66,16 +68,20 @@ class Level:
 
     # Player obj collision
     def obj_collision(self,obj):
+        mob = ['mob_1','mob_2']
         for t in self.sprite_group[obj]:
             if obj == 'trap':
                 if t.rect.colliderect(player.rect):
                     player.health -= player.health
                     self.respawn()
-            elif obj == 'mob_1':
+
+            elif obj == 'mob_2':
                 if t.rect.colliderect(player.rect):
                     player.health -= 1
+                    print(player.health)
                     if player.health <= 0:
                         self.respawn()
+                        
             elif obj == 'flag':
                 if t.rect.colliderect(player.rect):
                     if player.reclic_collected == len(self.sprite_group['relic']):
@@ -99,6 +105,7 @@ class Level:
                     if self.b1.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
                         self.level = level_1
+                        self.empty_level()
                         self.create_level()
         
                     
@@ -129,6 +136,7 @@ class Level:
 
         self.obj_collision('trap')
         self.obj_collision('mob_1')
+        self.obj_collision('mob_2')
         self.obj_collision('flag')
 
 class Collectible(pygame.sprite.Sprite):
@@ -170,7 +178,6 @@ class Collectible(pygame.sprite.Sprite):
             if s.rect.colliderect(self.rect) and self.type == 'relic':
                 player.reclic_collected += self.relic_gain
                 self.relic_collected = True
-                print(player.reclic_collected)
                 if self.relic_collected:
                     self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
                     self.relic_gain = 0
@@ -182,6 +189,5 @@ class Collectible(pygame.sprite.Sprite):
 class Flag(pygame.sprite.Sprite):
     def __init__(self,pos) -> None:
         super().__init__()
-        self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
+        self.image = pygame.image.load('./assets/Tiles/flag.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-    
