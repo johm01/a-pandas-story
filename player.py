@@ -65,7 +65,13 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = -20
 
     def player_mob_collision(self):
-        for sprite in self.sprite_groups['mob_1']:
+        # Looping through target list 
+        for i in range(len(self.can_hit)):
+            # Creating a var for each mob we want to have hit props 
+            target = self.can_hit[i]
+
+        # Colliding with each target 
+        for sprite in self.sprite_groups[target]:
             if sprite.rect.colliderect(self.rect):
                 if self.direction.x > 0:
                     self.direction.x = -20 * self.knockback_mod 
@@ -101,13 +107,12 @@ class Player(pygame.sprite.Sprite):
             self.is_ground = True
             print('Off Bamboo',self.on_bamboo)   
 
-    # Vertical Collision
+    # Player collision with basic collidiable objects 
     def collision_floor_wall(self,sprite: list,direction):
-        # Vertical Collision 
         if direction == 'vertical':
             self.p_gravity()
             for s in range(len(sprite)):
-                for sprites in self.can_hit[s]:
+                for sprites in self.sprite_groups['collide']:
                     if sprites.rect.colliderect(self.rect):
                         self.is_ground = True
                         if self.direction.y > 0: 
@@ -116,11 +121,10 @@ class Player(pygame.sprite.Sprite):
                         elif self.direction.y < 0:
                             self.rect.top = sprites.rect.bottom
                             self.direction.y = 0
-        # Horizontal Collision
         if direction == 'horizontal':
             self.rect.x += self.direction.x * self.vel
             for s in range(len(sprite)):
-                for sprites in self.can_hit[s]:
+                for sprites in self.sprite_groups['collide']:
                     if sprites.rect.colliderect(self.rect):
                         if self.direction.x < 0:
                             self.rect.left = sprites.rect.right
