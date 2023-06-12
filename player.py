@@ -53,6 +53,7 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1
         else:
             self.direction.x = 0
+            self.state = 'idle'
 
         # Player jump
         if key[pygame.K_SPACE] and self.is_ground:
@@ -69,14 +70,13 @@ class Player(pygame.sprite.Sprite):
         for i in range(len(self.can_hit)):
             # Creating a var for each mob we want to have hit props 
             target = self.can_hit[i]
-
-        # Colliding with each target 
-        for sprite in self.sprite_groups[target]:
-            if sprite.rect.colliderect(self.rect):
-                if self.direction.x > 0:
-                    self.direction.x = -20 * self.knockback_mod 
-                elif self.direction.x < 0:
-                    self.direction.x = 20 * self.knockback_mod 
+            # Colliding with each target 
+            for sprite in self.sprite_groups[target]:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x >= 0:
+                        self.direction.x = -20 * self.knockback_mod 
+                    elif self.direction.x < 0:
+                        self.direction.x = 20 * self.knockback_mod 
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
@@ -107,7 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.is_ground = True
             print('Off Bamboo',self.on_bamboo)   
 
-    # Player collision with basic collidiable objects 
+    # Player collision with basic collidiable sprites
     def collision_floor_wall(self,sprite: list,direction):
         if direction == 'vertical':
             self.p_gravity()
