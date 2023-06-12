@@ -20,7 +20,8 @@ class Mob(pygame.sprite.Sprite):
     def mob_movement(self):
             if self.is_moving:
                 self.direction.x = 1
-
+                
+    # Mobs collision with collidable sprites
     def mob_floor_collision(self,direction: str):
         if direction == 'vertical':
             gravity(self,self.is_falling)
@@ -45,6 +46,7 @@ class Mob(pygame.sprite.Sprite):
 
     # Checking wether we want the mob to be passive or aggressive 
     def check_mob(self):
+        # if mob_1 we want it to move 
         if self.type == 'mob_1':
             self.mob_movement()
             self.mob_floor_collision('vertical')
