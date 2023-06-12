@@ -13,11 +13,12 @@ class Level:
         self.start = False
         self.replace = False
         self.clock = pygame.time.Clock()
+        self.levels_list = levels
         self.start_game()
 
     def create_level(self):
         tile = tiles_img
-        for row_index, row in enumerate(self.level):
+        for row_index, row in enumerate(self.levels_list[self.level]):
             for col_index,col in enumerate(row):
                 x = row_index * 64
                 y = col_index * 64
@@ -66,27 +67,37 @@ class Level:
         self.empty_level()
         self.create_level()
 
+    def player_loss_hp(self,hp):
+        player.health -= hp
+        print(player.health)
+        if player.health <= 0:
+            self.respawn()
+
+    def finish_level(self):
+        if player.reclic_collected == len(self.sprite_group['relic']):
+            # Change level when player has the same amount of relics as the level has
+            self.level = self.level + 1
+            self.respawn()
+
     # Player obj collision
     def obj_collision(self,obj):
         mob = ['mob_1','mob_2']
         for t in self.sprite_group[obj]:
             if obj == 'trap':
                 if t.rect.colliderect(player.rect):
-                    player.health -= player.health
-                    self.respawn()
+                    self.player_loss_hp(player.health)
 
-            elif obj == 'mob_2':
+            if obj == 'mob_2':
                 if t.rect.colliderect(player.rect):
-                    player.health -= 1
-                    print(player.health)
-                    if player.health <= 0:
-                        self.respawn()
+                    self.player_loss_hp(1)
+
+            if obj == 'mob_1':
+                if t.rect.colliderect(player.rect):
+                    self.player_loss_hp(1)
                         
-            elif obj == 'flag':
+            if obj == 'flag':
                 if t.rect.colliderect(player.rect):
-                    if player.reclic_collected == len(self.sprite_group['relic']):
-                        self.level = grass_plains
-                        self.respawn()
+                    self.finish_level()
 
     # GUI
     def create_ui(self):
@@ -104,20 +115,20 @@ class Level:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.b1.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
-                        self.level = level_1
+                        self.level = 0
                         self.empty_level()
                         self.create_level()
         
                     
                     if self.b3.collidepoint(pygame.mouse.get_pos()):
                         print('starting level')
-                        self.level = grass_plains
+                        self.level = 1
                         self.create_level()
                     
                     if self.b2.collidepoint(pygame.mouse.get_pos()):
                         print('clearing level')
                         # Clearing the current level 
-                        self.level = empty
+                        self.level = 2
                         self.empty_level()
 
             # DO NOT SWAP THESE LOL IT WILL GIVE BRAIN ACHE 
@@ -191,3 +202,4 @@ class Flag(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('./assets/Tiles/flag.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
+    
