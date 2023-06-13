@@ -25,13 +25,18 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.pos = pos
         self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.shooting = None
+        self.shooting = True
+        if self.shooting:
+            self.spawnprojc()
+            self.shooting = False
+
+        if not self.shooting:
+            self.shooting = True
+
+        print(len(self.spritegroup['projectile']))
     
     def spawnprojc(self):
         self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-15)))
-
-    def update(self):
-        self.spawnprojc()
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type):
