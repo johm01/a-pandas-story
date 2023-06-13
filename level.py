@@ -1,7 +1,7 @@
 from settings import *
 import pygame 
 from objects import Tile,Trap
-from mob import Mob
+from mob import Mob,Projectile,ProjectileSpawner
 from player import Player
 
 class Level:
@@ -57,6 +57,9 @@ class Level:
                     self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1'))
                 if col == 'm2':
                     self.sprite_group["mob_2"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2'))
+                if col == 'pj':
+                    for i in range(20):
+                        self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
     
     
     def empty_level(self):
