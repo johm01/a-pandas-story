@@ -1,9 +1,42 @@
-import pygame 
+import pygame
 from settings import * 
 
+
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        super().__init__()
+        self.image = pygame.image.load('./assets/Tiles/can.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.direction = pygame.math.Vector2(0,0)
+        self.is_moving = True
+        self.projectile_vel = 2 
+    
+    def shoot(self):
+        if self.is_moving:
+            self.rect.y -= 5 
+    
+    def update(self):
+        self.shoot()
+    
+class ProjectileSpawner(pygame.sprite.Sprite):
+    def __init__(self, pos) -> None:
+        super().__init__()
+        self.spritegroup = s_groups
+        self.pos = pos
+        self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.shooting = None
+    
+    def spawnprojc(self):
+        self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-15)))
+
+    def update(self):
+        self.spawnprojc()
+        
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type):
         super().__init__()
+        self.pos = pos 
         self.image = pygame.image.load(img).convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
         self.type = type 
@@ -22,7 +55,7 @@ class Mob(pygame.sprite.Sprite):
                 self.direction.x = 1
                 
     # Mobs collision with collidable sprites
-    def mob_floor_collision(self,direction: str):
+    def mob_floor_collision(self,direction: str,direction_2: str):
         if direction == 'vertical':
             gravity(self,self.is_falling)
             for i in self.sprite_group['collide']:
@@ -35,7 +68,7 @@ class Mob(pygame.sprite.Sprite):
                         self.rect.top = i.rect.bottom
                         self.direction.y = 0
 
-        if direction == 'horizontal':
+        if direction_2 == 'horizontal':
             self.rect.x += self.direction.x * self.vel
             for sprites in self.sprite_group['collide']:
                 if sprites.rect.colliderect(self.rect):
@@ -49,11 +82,7 @@ class Mob(pygame.sprite.Sprite):
         # if mob_1 we want it to move 
         if self.type == 'mob_1':
             self.mob_movement()
-            self.mob_floor_collision('vertical')
-            self.mob_floor_collision('horizontal')
-        elif self.type == 'mob_2':
-            self.mob_floor_collision('vertical')
-            self.mob_floor_collision('horizontal')
-
+        self.mob_floor_collision('vertical','horizontal')
+     
     def update(self):
         self.check_mob()
