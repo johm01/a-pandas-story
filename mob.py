@@ -1,4 +1,5 @@
 import pygame
+import time
 from settings import * 
 
 
@@ -26,17 +27,18 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.shooting = True
-        if self.shooting:
-            self.spawnprojc()
-            self.shooting = False
 
-        if not self.shooting:
-            self.shooting = True
-
+        # TODO Check if the projectile collides with an emtpty object if so we create a new projectile 
+        self.spawnprojc(5)
         print(len(self.spritegroup['projectile']))
     
-    def spawnprojc(self):
-        self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-15)))
+    def spawnprojc(self,n):
+        if n == 0:
+            self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-15)))
+        else:
+            n -= 1 
+            self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-n)))
+       
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type):
