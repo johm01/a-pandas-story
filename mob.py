@@ -29,17 +29,15 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.shooting = True
 
-        # TODO Check if the projectile collides with an emtpty object if so we create a new projectile 
-        print(len(self.spritegroup['projectile']))
-        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
-        
-    def spawnprojc(self,n):
-       
+    def spawnprojc(self,n):   
         for i in self.spritegroup['projectile']:
-            if i.rect.colliderect(self.rect):
-                self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
+            if i.rect.colliderect(self.rect) and self.shooting:
+                self.shooting = False
+                if not self.shooting: 
+                    self.shooting = True
+                    self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
     
-    def update(self) -> None:
+    def update(self):
         self.spawnprojc(0)
        
         
