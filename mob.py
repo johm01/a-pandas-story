@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 import time
 from settings import * 
@@ -29,15 +30,17 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.shooting = True
 
         # TODO Check if the projectile collides with an emtpty object if so we create a new projectile 
-        self.spawnprojc(5)
         print(len(self.spritegroup['projectile']))
-    
+        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
+        
     def spawnprojc(self,n):
-        if n == 0:
-            self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-15)))
-        else:
-            n -= 1 
-            self.spritegroup['projectile'].add(Projectile(pos=(self.pos[0],self.pos[1]-n)))
+       
+        for i in self.spritegroup['projectile']:
+            if i.rect.colliderect(self.rect):
+                self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
+    
+    def update(self) -> None:
+        self.spawnprojc(0)
        
         
 class Mob(pygame.sprite.Sprite):
