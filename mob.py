@@ -12,12 +12,25 @@ class Projectile(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2(0,0)
         self.is_moving = True
         self.projectile_vel = 2 
+        self.pos = pos 
+        self.spritegroup = s_groups
+        self.shooting = False
     
     def shoot(self):
         if self.is_moving:
             self.rect.y -= 5 
+
+    def spawnprojc(self):   
+        for i in self.spritegroup['proj_spawner']:
+            if i.rect.colliderect(self.rect) and not self.shooting:
+                self.shooting = True
+                if self.shooting: 
+                    self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
+                self.shooting = False
+    
     
     def update(self):
+        self.spawnprojc()
         self.shoot()
     
 class ProjectileSpawner(pygame.sprite.Sprite):
@@ -28,17 +41,9 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.shooting = True
-
-    def spawnprojc(self,n):   
-        for i in self.spritegroup['projectile']:
-            if i.rect.colliderect(self.rect) and self.shooting:
-                self.shooting = False
-                if not self.shooting: 
-                    self.shooting = True
-                    self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
     
     def update(self):
-        self.spawnprojc(0)
+        pass
        
         
 class Mob(pygame.sprite.Sprite):
