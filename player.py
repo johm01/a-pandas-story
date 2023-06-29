@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
          # Player image 
         self.sprite_groups = s_groups 
         self.pos = pos
-        self.img = './assets/Player/player.png'
+        self.img = './assets/player.png'
         self.image = pygame.image.load(self.img).convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.sur = pygame.display.get_surface()
