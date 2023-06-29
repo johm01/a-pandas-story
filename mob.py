@@ -3,7 +3,6 @@ import pygame
 import time
 from settings import * 
 
-
 class Projectile(pygame.sprite.Sprite):
     def __init__(self,pos):
         super().__init__()
@@ -26,25 +25,19 @@ class Projectile(pygame.sprite.Sprite):
                 self.shooting = True
                 if self.shooting: 
                     self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]-15)))
-                self.shooting = False
-    
-    
+            
     def update(self):
         self.spawnprojc()
         self.shoot()
-    
+
 class ProjectileSpawner(pygame.sprite.Sprite):
     def __init__(self, pos) -> None:
         super().__init__()
         self.spritegroup = s_groups
         self.pos = pos
-        self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
+        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.shooting = True
-    
-    def update(self):
-        pass
-       
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type):
