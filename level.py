@@ -58,8 +58,9 @@ class Level:
                 if col == 'm2':
                     self.sprite_group["mob_2"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2'))
                 if col == 'pj':
-                    for i in range(20):
-                        self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
+                    self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
+                if col == 'ps':
+                    self.sprite_group["projectile"].add(Projectile(pos=(x,y+20)))
     
     
     def empty_level(self):
