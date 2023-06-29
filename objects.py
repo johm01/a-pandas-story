@@ -10,7 +10,7 @@ class Tile(pygame.sprite.Sprite):
         self.sprite_group = orders
 
         if self.replace:
-            self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+            self.image = pygame.image.load('./assets/dead.png').convert_alpha()
 
 class Trap(pygame.sprite.Sprite):
     def __init__(self, groups,type,pos) -> None:
