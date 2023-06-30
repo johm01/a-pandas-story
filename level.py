@@ -85,23 +85,19 @@ class Level:
 
     # Player obj collision
     def obj_collision(self,obj):
-        mob = ['mob_1','mob_2']
         for t in self.sprite_group[obj]:
-            if obj == 'trap':
-                if t.rect.colliderect(player.rect):
+            if t.rect.colliderect(player.rect):
+                if obj == 'trap':
                     self.player_loss_hp(player.health)
-
-            if obj == 'mob_2':
-                if t.rect.colliderect(player.rect):
-                    self.player_loss_hp(1)
-
-            if obj == 'mob_1':
-                if t.rect.colliderect(player.rect):
-                    self.player_loss_hp(1)
-                        
-            if obj == 'flag':
-                if t.rect.colliderect(player.rect):
+          
+                if obj == 'flag':
                     self.finish_level()
+
+                if obj == 'mob_1':
+                    self.player_loss_hp(1)
+
+                if obj == 'mob_2':
+                    self.player_loss_hp(1)
 
     # GUI
     def create_ui(self):
@@ -149,11 +145,10 @@ class Level:
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        self.obj_collision('trap')
-        self.obj_collision('mob_1')
-        self.obj_collision('mob_2')
-        self.obj_collision('flag')
-
+        event_collide = ['trap','flag','mob_1','mob_2']
+        for i in range(len(event_collide)):
+            self.obj_collision(event_collide[i])
+            
 class Collectible(pygame.sprite.Sprite):
     def __init__(self,pos,type) -> None:
         super().__init__()
