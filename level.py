@@ -7,7 +7,7 @@ from player import Player
 class Level:
     def __init__(self) -> None:
         self.sprite_group = s_groups
-        self.bg = pygame.image.load('./assets/background.png').convert_alpha()
+        self.bg = pygame.image.load('./assets/Tiles/background.png').convert_alpha()
         self.sur = pygame.display.get_surface()
         self.state = None
         self.start = False
@@ -26,10 +26,10 @@ class Level:
                 global player
 
                 if col == 'x':
-                    self.sprite_group['collide'].add(Tile(img='./assets/tile1.png',pos=(x,y)))
+                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
 
                 if col == 'n':
-                    self.sprite_group['collide'].add(Tile(img='./assets/tile_2.png',pos=(x,y)))
+                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
                 
                 if col == 'p':
                     player = Player(vel=4,health=5,pos=(x,y),g=1.25,hp_mod=0,groups=[self.sprite_group['player']])
@@ -50,17 +50,17 @@ class Level:
                     self.sprite_group['collide'].add(Tile(img=tile[1],pos=(x,y)))
 
                 if col == 't':
-                    self.sprite_group['trap'].add(Tile(img='./assets/spike.png',pos=(x,y)))
+                    self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
 
                 # Create different mobs for passive and moving mobs 
                 if col == 'm1':
-                    self.sprite_group["mob_1"].add(Mob(img='./assets/mob1.png',pos=(x,y),type='mob_1'))
+                    self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1'))
                 if col == 'm2':
-                    self.sprite_group["mob_2"].add(Mob(img='./assets/mob1.png',pos=(x,y),type='mob_2'))
+                    self.sprite_group["mob_2"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2'))
                 if col == 'pj':
                     self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
                 if col == 'ps':
-                    self.sprite_group["projectile"].add(Projectile(pos=(x,y+20)))
+                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y-20)))
     
     
     def empty_level(self):
@@ -168,24 +168,24 @@ class Collectible(pygame.sprite.Sprite):
         self.relic_collected = False
 
         if self.type == 'coin':
-            self.image = pygame.image.load('./assets/coin.png').convert_alpha()
+            self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
         elif self.type == 'fruit':
-            self.image = pygame.image.load('./assets/fruit.png').convert_alpha()
+            self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
         elif self.type == 'relic':
-            self.image = pygame.image.load('./assets/relic.png').convert_alpha()
+            self.image = pygame.image.load('./assets/Tiles/relic.png').convert_alpha()
 
     def collision(self):
         # Player sprite colliding with item sprite 
         for s in self.sprite_groups['player']:
             if s.rect.colliderect(self.rect) and self.type == 'coin':
-                self.image = pygame.image.load('./assets/dead.png').convert_alpha()
+                self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
          
             if s.rect.colliderect(self.rect) and self.type == 'fruit':
                 if not player.is_dead and player.health >= 1:
                     player.health += self.fruit_gain
                     self.fruit_collected = True
                     if self.fruit_collected:
-                        self.image = pygame.image.load('./assets/dead.png').convert_alpha()
+                        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
                         self.fruit_gain = 0
                 else:
                     player.health += player.hp_mod
@@ -194,7 +194,7 @@ class Collectible(pygame.sprite.Sprite):
                 player.reclic_collected += self.relic_gain
                 self.relic_collected = True
                 if self.relic_collected:
-                    self.image = pygame.image.load('./assets/dead.png').convert_alpha()
+                    self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
                     self.relic_gain = 0
 
     def update(self):
@@ -204,6 +204,6 @@ class Collectible(pygame.sprite.Sprite):
 class Flag(pygame.sprite.Sprite):
     def __init__(self,pos) -> None:
         super().__init__()
-        self.image = pygame.image.load('./assets/flag.png').convert_alpha()
+        self.image = pygame.image.load('./assets/Tiles/flag.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
     
