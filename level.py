@@ -171,26 +171,28 @@ class Collectible(pygame.sprite.Sprite):
 
     def collision(self):
         # Player sprite colliding with item sprite 
+        # Player sprite colliding with item sprite, checking which fruit we collided with 
         for s in self.sprite_groups['player']:
-            if s.rect.colliderect(self.rect) and self.type == 'coin':
-                self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-         
-            if s.rect.colliderect(self.rect) and self.type == 'fruit':
-                if not player.is_dead and player.health >= 1:
-                    player.health += self.fruit_gain
-                    self.fruit_collected = True
-                    if self.fruit_collected:
-                        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-                        self.fruit_gain = 0
-                else:
-                    player.health += player.hp_mod
-
-            if s.rect.colliderect(self.rect) and self.type == 'relic':
-                player.reclic_collected += self.relic_gain
-                self.relic_collected = True
-                if self.relic_collected:
+            if s.rect.colliderect(self.rect):
+                if self.type == 'coin':
                     self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-                    self.relic_gain = 0
+        
+                if self.type == 'fruit':
+                        if not player.is_dead and player.health >= 1:
+                            player.health += self.fruit_gain
+                            self.fruit_collected = True
+                        if self.fruit_collected:
+                            self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                            self.fruit_gain = 0
+                        else:
+                            player.health += player.hp_mod
+
+                if self.type == 'relic':
+                    player.reclic_collected += self.relic_gain
+                    self.relic_collected = True
+                    if self.relic_collected:
+                        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                        self.relic_gain = 0
 
     def update(self):
         self.collision()
