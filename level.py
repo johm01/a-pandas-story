@@ -164,21 +164,15 @@ class Collectible(pygame.sprite.Sprite):
         self.relic_gain = 1
         self.relic_collected = False
 
-        if self.type == 'coin':
-            self.image = pygame.image.load('./assets/Tiles/coin.png').convert_alpha()
-        elif self.type == 'fruit':
+        if self.type == 'fruit':
             self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
         elif self.type == 'relic':
             self.image = pygame.image.load('./assets/Tiles/relic.png').convert_alpha()
 
     def collision(self):
-        # Player sprite colliding with item sprite 
         # Player sprite colliding with item sprite, checking which fruit we collided with 
         for s in self.sprite_groups['player']:
-            if s.rect.colliderect(self.rect):
-                if self.type == 'coin':
-                    self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-        
+            if s.rect.colliderect(self.rect): 
                 if self.type == 'fruit':
                         if not player.is_dead and player.health >= 1:
                             player.health += self.fruit_gain
