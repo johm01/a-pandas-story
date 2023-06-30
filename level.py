@@ -16,6 +16,7 @@ class Level:
         self.levels_list = levels
         self.start_game()
 
+    
     def create_level(self):
         tile = tiles_img
         for row_index, row in enumerate(self.levels_list[self.level]):
@@ -54,13 +55,14 @@ class Level:
 
                 # Create different mobs for passive and moving mobs 
                 if col == 'm1':
-                    self.sprite_group["mob_1"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1'))
+                    Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1',groups=self.sprite_group['mob_1'])
                 if col == 'm2':
-                    self.sprite_group["mob_2"].add(Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2'))
+                    Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2',groups=self.sprite_group['mob_2'])
                 if col == 'pj':
                     self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
                 if col == 'ps':
                     self.sprite_group["projectile"].add(Projectile(pos=(x+20,y-20)))
+    
     
     
     def empty_level(self):
