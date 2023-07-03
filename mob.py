@@ -1,6 +1,4 @@
-from typing import Any
 import pygame
-import time
 from settings import * 
 
 class Projectile(pygame.sprite.Sprite):
@@ -10,7 +8,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.math.Vector2(0,0)
         self.is_moving = True
-        self.proj_vel = 5
+        self.proj_vel = 9
         self.pos = pos 
         self.spritegroup = s_groups
         self.shooting = False
@@ -41,8 +39,8 @@ class ProjectileSpawner(pygame.sprite.Sprite):
         self.shooting = True
         
 class Mob(pygame.sprite.Sprite):
-    def __init__(self,img,pos,type):
-        super().__init__()
+    def __init__(self,img,pos,type,groups):
+        super().__init__(groups)
         self.pos = pos 
         self.image = pygame.image.load(img).convert_alpha()
         self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
