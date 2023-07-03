@@ -1,206 +1,94 @@
-from settings import *
-import pygame 
-from objects import Tile
-from mob import Mob,Projectile
-from player import Player
+import pygame
+from settings import * 
 
-class Level:
-    def __init__(self) -> None:
-        self.sprite_group = s_groups
-        self.bg = pygame.image.load('./assets/Tiles/background.png').convert_alpha()
-        self.sur = pygame.display.get_surface()
-        self.state = None
-        self.start = False
-        self.replace = False
-        self.clock = pygame.time.Clock()
-        self.levels_list = levels
-        self.start_game()
-
-    def create_level(self):
-        tile = tiles_img
-        for row_index, row in enumerate(self.levels_list[self.level]):
-            for col_index,col in enumerate(row):
-                x = row_index * 64
-                y = col_index * 64
-
-                global player
-
-                if col == 'x':
-                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile1.png',pos=(x,y)))
-
-                if col == 'n':
-                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
-                
-                if col == 'p':
-                    player = Player(vel=4,health=5,pos=(x,y),g=1.25,groups=[self.sprite_group['player']])
-
-                if col == 'b':
-                    self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
-
-                if col == 'l':
-                    self.sprite_group['item'].add(Collectible(pos=(x+25,y-45),type='fruit'))
-
-                if col == 'r':
-                    self.sprite_group['relic'].add(Collectible(pos=(x+2.5,y-35),type='relic'))
-                
-                if col == 'f':
-                    self.sprite_group['flag'].add(Flag(pos=(x,y-62.5)))
-
-                if col == 's':
-                    self.sprite_group['collide'].add(Tile(img=tile[1],pos=(x,y)))
-
-                if col == 't':
-                    self.sprite_group['trap'].add(Tile(img='./assets/Tiles/spike.png',pos=(x,y)))
-
-                # Create different mobs for passive and moving mobs 
-                if col == 'm1':
-                    Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1',groups=self.sprite_group['mob_1'])
-                if col == 'm2':
-                    Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2',groups=self.sprite_group['mob_2'])
-                
-                # Projectiles
-                if col == 'py':
-                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y+30),type='y'))
-                if col == 'px':
-                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y-30),type='x'))
-                if col == 'pj':
-                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/dead.png',pos=(x,y)))
-    
-    def empty_level(self):
-        for i in self.sprite_group:  
-            self.sprite_group[i].empty()
-
-    def respawn(self):
-        self.empty_level()
-        self.create_level()
-
-    def player_loss_hp(self,hp):
-        player.health -= hp
-        print(player.health)
-        if player.health <= 0:
-            self.respawn()
-
-    def finish_level(self):
-        if player.reclic_collected == len(self.sprite_group['relic']):
-            # Change level when player has the same amount of relics as the level has
-            self.level = self.level + 1
-            self.respawn()
-
-    # Player obj collision
-    def obj_collision(self,obj):
-        for t in self.sprite_group[obj]:
-            if t.rect.colliderect(player.rect):
-                if obj == 'trap':
-                    self.player_loss_hp(player.health)
-          
-                if obj == 'flag':
-                    self.finish_level()
-
-                if obj == 'mob_1':
-                    self.player_loss_hp(player.hp_mod)
-
-                if obj == 'mob_2':
-                    self.player_loss_hp(player.hp_mod)
-
-                if obj == 'projectile':
-                    self.player_loss_hp(player.hp_mod)
-
-    # GUI
-    def create_ui(self):
-        self.b1 = button(self.sur,(150,0),'Level 1')
-        self.b3 = button(self.sur,(450,0),'Level 2')
-        self.b2 = button(self.sur,(250,0),'Emtpy Level')
-
-    def start_game(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-
-                # Button actions 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.b1.collidepoint(pygame.mouse.get_pos()):
-                        print('starting level')
-                        self.level = 0
-                        self.empty_level()
-                        self.create_level()
-        
-                    
-                    if self.b3.collidepoint(pygame.mouse.get_pos()):
-                        print('starting level')
-                        self.level = 1
-                        self.create_level()
-                    
-                    if self.b2.collidepoint(pygame.mouse.get_pos()):
-                        print('clearing level')
-                        # Clearing the current level 
-                        self.level = 2
-                        self.empty_level()
-
-            # DO NOT SWAP THESE LOL IT WILL GIVE BRAIN ACHE 
-            self.sur.blit(self.bg,(0,0))
-            self.create_ui()
-
-            self.run()
-            pygame.display.update()
-            self.clock.tick(FPS)
-
-    def run(self):
-        # Drawing Sprites
-        for i in self.sprite_group:  
-            self.sprite_group[i].draw(self.sur)
-            self.sprite_group[i].update()
-
-        event_collide = ['trap','flag','mob_1','mob_2','projectile']
-        for i in range(len(event_collide)):
-            self.obj_collision(event_collide[i])
-
-class Collectible(pygame.sprite.Sprite):
-    def __init__(self,pos,type) -> None:
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self,pos,type):
         super().__init__()
-        self.sur = pygame.display.get_surface()
-        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+        self.image = pygame.image.load('./assets/Tiles/arrow.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.sprite_groups = s_groups
+        self.direction = pygame.math.Vector2(0,0)
+        self.is_moving = True
+        self.proj_vel = 8
+        self.pos = pos 
+        self.spritegroup = s_groups
+        self.shooting = False
         self.type = type
-        self.fruit_collected = False
-        self.fruit_gain = 2
-        self.relic_gain = 1
-        self.relic_collected = False
 
-        if self.type == 'fruit':
-            self.image = pygame.image.load('./assets/Tiles/fruit.png').convert_alpha()
-        elif self.type == 'relic':
-            self.image = pygame.image.load('./assets/Tiles/relic.png').convert_alpha()
+    def shoot(self,dir):
+        if self.is_moving:
+            if dir == 'y':
+                self.rect.y -= self.proj_vel
+            if dir == 'x':
+                self.rect.x -= self.proj_vel
 
-    def collision(self):
-        # Player sprite colliding with item sprite, checking which fruit we collided with 
-        for s in self.sprite_groups['player']:
-            if s.rect.colliderect(self.rect): 
-                if self.type == 'fruit':
-                        if not player.is_dead and player.health >= 1:
-                            player.health += self.fruit_gain
-                            self.fruit_collected = True
-                        if self.fruit_collected:
-                            self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-                            self.fruit_gain = 0
-                        else:
-                            player.health += player.hp_mod
-
-                if self.type == 'relic':
-                    player.reclic_collected += self.relic_gain
-                    self.relic_collected = True
-                    if self.relic_collected:
-                        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-                        self.relic_gain = 0
-
+    def spawnprojc(self,pj_amt):   
+        for i in self.spritegroup['collide'] :
+            if i.rect.colliderect(self.rect) and not self.shooting:
+                self.shooting = True
+                if self.shooting: 
+                    for i in range(pj_amt):
+                        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]),type=self.type))
+            
     def update(self):
-        self.collision()
+        self.spawnprojc(1)
+        # Checking wether we want to shoot accross the x or the y axis 
+        if self.type == 'y':
+            self.shoot('y')
+        if self.type == 'x':
+            self.shoot('x')
+            self.proj_vel = self.proj_vel 
+        
+class Mob(pygame.sprite.Sprite):
+    def __init__(self,img,pos,type,groups):
+        super().__init__(groups)
+        self.pos = pos 
+        self.image = pygame.image.load(img).convert_alpha()
+        self.rect = self.image.get_rect(topleft=(pos[0],pos[1]-64))
+        self.type = type 
+        self.sprite_group = s_groups
 
-# Flag to move onto the next level
-class Flag(pygame.sprite.Sprite):
-    def __init__(self,pos) -> None:
-        super().__init__()
-        self.image = pygame.image.load('./assets/Tiles/flag.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
+        self.direction = pygame.math.Vector2(0,0) 
+
+        self.is_moving = True
+        self.gravity = 4.3
+        self.vel = -2
+        self.is_falling = True
+        self.is_ground = False
+    
+    def mob_movement(self):
+            if self.is_moving:
+                self.direction.x = 1
+                
+    # Mobs collision with collidable sprites
+    def mob_floor_collision(self,direction: str,direction_2: str):
+        if direction == 'vertical':
+            gravity(self,self.is_falling)
+            for i in self.sprite_group['collide']:
+                if i.rect.colliderect(self.rect):
+                    self.is_ground = True
+                    if self.direction.y > 0: 
+                        self.rect.bottom = i.rect.top
+                        self.direction.y = 0
+                    elif self.direction.y < 0:
+                        self.rect.top = i.rect.bottom
+                        self.direction.y = 0
+
+        if direction_2 == 'horizontal':
+            self.rect.x += self.direction.x * self.vel
+            for sprites in self.sprite_group['collide']:
+                if sprites.rect.colliderect(self.rect):
+                    if self.direction.x < 0:
+                        self.rect.left = sprites.rect.right
+                    elif self.direction.x > 0:
+                        self.rect.right = sprites.rect.left
+
+    # Checking wether we want the mob to be passive or aggressive 
+    def check_mob(self):
+        # if mob_1 we want it to move 
+        if self.type == 'mob_1':
+            self.mob_movement()
+        self.mob_floor_collision('vertical','horizontal')
+     
+    def update(self):
+        self.check_mob()
     
