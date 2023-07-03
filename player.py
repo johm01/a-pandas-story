@@ -4,13 +4,13 @@ import time
 
 class Player(pygame.sprite.Sprite):
     images = player_img
-    def __init__(self, groups, pos, vel: int , health: int,g: float,hp_mod: int) -> None:
+    def __init__(self, groups, pos, vel: int , health: int,g: float) -> None:
         super().__init__(groups)
 
          # Player image 
         self.sprite_groups = s_groups 
         self.pos = pos
-        self.img = './assets/player.png'
+        self.img = './assets/Player/player.png'
         self.image = pygame.image.load(self.img).convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         self.sur = pygame.display.get_surface()
@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.gravity = g
         self.vel = vel
         self.health = health 
-        self.hp_mod = hp_mod
+        self.hp_mod = self.health / 2
         self.knockback_mod = 1 
         self.reclic_collected = 0
 
@@ -76,7 +76,13 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.x >= 0:
                         self.direction.x = -20 * self.knockback_mod 
                     elif self.direction.x < 0:
-                        self.direction.x = 20 * self.knockback_mod 
+                        self.direction.x = 20 * self.knockback_mod
+
+    def output_hp(self):
+        if (self.health < self.health):
+            print(self.health)
+        if (self.health > self.health):
+            print(self.health) 
     
     # Player and Bamboo interaction               
     def player_onbamboo(self):
@@ -105,7 +111,8 @@ class Player(pygame.sprite.Sprite):
             self.falling = True
             self.moving_x = True
             self.is_ground = True
-            print('Off Bamboo',self.on_bamboo)   
+            print('Off Bamboo',self.on_bamboo)  
+        # If player has reached the top of the bamboo 
 
     # Player collision with basic collidiable sprites
     def collision_floor_wall(self,sprite: list,direction):
@@ -139,6 +146,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movement(pygame.key.get_pressed())
         self.player_onbamboo()
+        self.output_hp()
         self.player_mob_collision()
         self.collision_floor_wall(self.can_hit,'vertical')
         self.collision_floor_wall(self.can_hit,'horizontal')
