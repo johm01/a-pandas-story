@@ -58,7 +58,7 @@ class Level:
                 if col == 'm2':
                     Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2',groups=self.sprite_group['mob_2'])
                 if col == 'ps':
-                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y+30)))
+                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y+30),type='reg'))
                 if col == 'pj':
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/dead.png',pos=(x,y)))
     
