@@ -1,6 +1,6 @@
 from settings import *
 import pygame 
-from objects import Tile,Trap
+from objects import Tile
 from mob import Mob,Projectile,ProjectileSpawner
 from player import Player
 
@@ -16,7 +16,6 @@ class Level:
         self.levels_list = levels
         self.start_game()
 
-    
     def create_level(self):
         tile = tiles_img
         for row_index, row in enumerate(self.levels_list[self.level]):
@@ -33,7 +32,7 @@ class Level:
                     self.sprite_group['collide'].add(Tile(img='./assets/Tiles/tile_2.png',pos=(x,y)))
                 
                 if col == 'p':
-                    player = Player(vel=4,health=5,pos=(x,y),g=1.25,hp_mod=0,groups=[self.sprite_group['player']])
+                    player = Player(vel=4,health=5,pos=(x,y),g=1.25,groups=[self.sprite_group['player']])
 
                 if col == 'b':
                     self.sprite_group['bamboo'].add(Tile(img=tile[2],pos=(x,y)))
@@ -62,8 +61,6 @@ class Level:
                     self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
                 if col == 'ps':
                     self.sprite_group["projectile"].add(Projectile(pos=(x+20,y-20)))
-    
-    
     
     def empty_level(self):
         for i in self.sprite_group:  
@@ -96,10 +93,13 @@ class Level:
                     self.finish_level()
 
                 if obj == 'mob_1':
-                    self.player_loss_hp(1)
+                    self.player_loss_hp(player.hp_mod)
 
                 if obj == 'mob_2':
-                    self.player_loss_hp(1)
+                    self.player_loss_hp(player.hp_mod)
+
+                if obj == 'projectile':
+                    self.player_loss_hp(player.hp_mod)
 
     # GUI
     def create_ui(self):
@@ -147,10 +147,10 @@ class Level:
             self.sprite_group[i].draw(self.sur)
             self.sprite_group[i].update()
 
-        event_collide = ['trap','flag','mob_1','mob_2']
+        event_collide = ['trap','flag','mob_1','mob_2','projectile']
         for i in range(len(event_collide)):
             self.obj_collision(event_collide[i])
-            
+
 class Collectible(pygame.sprite.Sprite):
     def __init__(self,pos,type) -> None:
         super().__init__()
