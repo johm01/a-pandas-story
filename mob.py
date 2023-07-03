@@ -1,8 +1,5 @@
-import pygame
-from settings import * 
-
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self,pos):
+    def __init__(self,pos,type):
         super().__init__()
         self.image = pygame.image.load('./assets/Tiles/arrow.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
@@ -12,22 +9,29 @@ class Projectile(pygame.sprite.Sprite):
         self.pos = pos 
         self.spritegroup = s_groups
         self.shooting = False
-    
-    def shoot(self):
+        self.type = type
+
+    def shoot(self,dir):
         if self.is_moving:
-            self.rect.y -= self.proj_vel
+            if dir == 'y':
+                self.rect.y -= self.proj_vel
+            if dir == 'x':
+                self.rect.x -= self.proj_vel
 
     def spawnprojc(self,pj_amt):   
-        for i in self.spritegroup['collide']:
+        for i in self.spritegroup['collide'] :
             if i.rect.colliderect(self.rect) and not self.shooting:
                 self.shooting = True
                 if self.shooting: 
                     for i in range(pj_amt):
-                        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1])))
+                        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]),type=self.type))
             
     def update(self):
         self.spawnprojc(1)
-        self.shoot()
+        if self.type == 'reg':
+            self.shoot('y')
+        if self.type == 'x':
+            self.shoot('x')
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type,groups):
@@ -78,6 +82,10 @@ class Mob(pygame.sprite.Sprite):
         # if mob_1 we want it to move 
         if self.type == 'mob_1':
             self.mob_movement()
+
+        if self.type == 'mob_2':
+           for i in range(1):
+            self.sprite_group['projectile'].add(Projectile((self.pos[0],self.pos[1]-35),type='x'))
         self.mob_floor_collision('vertical','horizontal')
      
     def update(self):
