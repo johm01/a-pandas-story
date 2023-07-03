@@ -8,7 +8,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.math.Vector2(0,0)
         self.is_moving = True
-        self.proj_vel = 9
+        self.proj_vel = 8
         self.pos = pos 
         self.spritegroup = s_groups
         self.shooting = False
@@ -18,7 +18,7 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.y -= self.proj_vel
 
     def spawnprojc(self,pj_amt):   
-        for i in self.spritegroup['proj_spawner']:
+        for i in self.spritegroup['collide']:
             if i.rect.colliderect(self.rect) and not self.shooting:
                 self.shooting = True
                 if self.shooting: 
@@ -28,15 +28,6 @@ class Projectile(pygame.sprite.Sprite):
     def update(self):
         self.spawnprojc(1)
         self.shoot()
-
-class ProjectileSpawner(pygame.sprite.Sprite):
-    def __init__(self, pos) -> None:
-        super().__init__()
-        self.spritegroup = s_groups
-        self.pos = pos
-        self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
-        self.shooting = True
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type,groups):
