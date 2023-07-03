@@ -1,7 +1,7 @@
 from settings import *
 import pygame 
 from objects import Tile
-from mob import Mob,Projectile,ProjectileSpawner
+from mob import Mob,Projectile
 from player import Player
 
 class Level:
@@ -57,10 +57,10 @@ class Level:
                     Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_1',groups=self.sprite_group['mob_1'])
                 if col == 'm2':
                     Mob(img='./assets/Mobs/mob1.png',pos=(x,y),type='mob_2',groups=self.sprite_group['mob_2'])
-                if col == 'pj':
-                    self.sprite_group["proj_spawner"].add(ProjectileSpawner(pos=(x,y-25)))
                 if col == 'ps':
-                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y-20)))
+                    self.sprite_group["projectile"].add(Projectile(pos=(x+20,y+30)))
+                if col == 'pj':
+                    self.sprite_group['collide'].add(Tile(img='./assets/Tiles/dead.png',pos=(x,y)))
     
     def empty_level(self):
         for i in self.sprite_group:  
@@ -199,4 +199,3 @@ class Flag(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('./assets/Tiles/flag.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-    
