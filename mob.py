@@ -1,7 +1,11 @@
+import pygame
+from settings import * 
+
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self,pos,type):
+    def __init__(self,pos,type,img):
         super().__init__()
-        self.image = pygame.image.load('./assets/Tiles/arrow.png').convert_alpha()
+        self.img = img
+        self.image = pygame.image.load(self.img).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.direction = pygame.math.Vector2(0,0)
         self.is_moving = True
@@ -18,20 +22,26 @@ class Projectile(pygame.sprite.Sprite):
             if dir == 'x':
                 self.rect.x -= self.proj_vel
 
-    def spawnprojc(self,pj_amt):   
-        for i in self.spritegroup['collide'] :
+    def spawnprojc(self,pj_amt,types):   
+        for i in self.spritegroup[types]:
             if i.rect.colliderect(self.rect) and not self.shooting:
                 self.shooting = True
+                if types == 'trap':
+                    self.image = pygame.image.load('./assets/Tiles/dead.png').convert_alpha()
+                             
                 if self.shooting: 
                     for i in range(pj_amt):
-                        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]),type=self.type))
+                        self.spritegroup['projectile'].add(Projectile((self.pos[0],self.pos[1]),type=self.type,img=self.img))
             
     def update(self):
-        self.spawnprojc(1)
-        if self.type == 'reg':
+        # Checking wether we want to shoot accross the x or the y axis 
+        if self.type == 'y':
+            self.spawnprojc(1,'collide')
             self.shoot('y')
         if self.type == 'x':
+            self.spawnprojc(1,'trap')
             self.shoot('x')
+            self.proj_vel = self.proj_vel 
         
 class Mob(pygame.sprite.Sprite):
     def __init__(self,img,pos,type,groups):
@@ -82,10 +92,6 @@ class Mob(pygame.sprite.Sprite):
         # if mob_1 we want it to move 
         if self.type == 'mob_1':
             self.mob_movement()
-
-        if self.type == 'mob_2':
-           for i in range(1):
-            self.sprite_group['projectile'].add(Projectile((self.pos[0],self.pos[1]-35),type='x'))
         self.mob_floor_collision('vertical','horizontal')
      
     def update(self):
